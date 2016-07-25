@@ -444,7 +444,6 @@ LOCAL void bootAppShellAutoboot
 
     bootStringToStruct (sysBootLine, &params);
     sysFlags = params.flags;
-	bootAppPrintf("cost time %d\r\n",cpu_timebase_get(), 0, 0, 0, 0, 0);
 	if (!(sysStartType & BOOT_NO_AUTOBOOT) &&
  		!(sysFlags & SYSFLG_NO_AUTOBOOT))
 		{

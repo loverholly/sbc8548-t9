@@ -132,14 +132,14 @@ TLB_ENTRY_DESC sysStaticTlbDesc [] =
     }
 
 #endif  /* INCLUDE_PCI_BUS */
-    ,
-    {
+	,
+     {
     0xf0000000, 0x0, 0xf0000000,
     _MMU_TLB_TS_1   | _MMU_TLB_SZ_256M  | 0   |
     _MMU_TLB_PERM_W | _MMU_TLB_PERM_X   | _MMU_TLB_ATTR_I  |
     _MMU_TLB_ATTR_G
-    }, 
-	 {
+    },
+    {
     0xb0000000, 0x0, 0xb0000000,
     _MMU_TLB_TS_1   | _MMU_TLB_SZ_256M  | 0   |
     _MMU_TLB_PERM_W | _MMU_TLB_PERM_X   | _MMU_TLB_ATTR_I  |
@@ -150,7 +150,7 @@ TLB_ENTRY_DESC sysStaticTlbDesc [] =
     _MMU_TLB_TS_1   | _MMU_TLB_SZ_256M  | 0   |
     _MMU_TLB_PERM_W | _MMU_TLB_PERM_X   | _MMU_TLB_ATTR_I  |
     _MMU_TLB_ATTR_G
-    }, 
+    },  
 
 };
 
@@ -775,7 +775,6 @@ void sysHwInit (void)
 
     *(UINT32*)(CCSBAR + 0x1010) = 0x01040004;
 #endif
-	d(0xfff00000,0x200,0x4);
     sysIvprSet(0x0);
 
     /* Disable L1 Icache */

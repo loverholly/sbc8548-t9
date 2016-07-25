@@ -45,7 +45,7 @@ modification history
 #  undef  XTSEC_NAME
 #  define XTSEC_NAME "motetsec"
 #endif /* defined(INCLUDE_ETSEC_VXB_END) || defined(INCLUDE_ETSEC_VXB_END2) */
-
+/* #define INCLUDE_OPTIONAL_TSECS */
 /*
  * On the SBC8548 board, PHYs are physically wired according
  * to the following table:
