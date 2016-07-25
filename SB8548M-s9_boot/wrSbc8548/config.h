@@ -790,7 +790,6 @@ IMPORT char* rioHostAdrs;
 #define INCLUDE_DOSFS_MAIN
 #define INCLUDE_BOOT_FILESYSTEMS
 /* TrueFFS flash support */
-		/* ¡§?¡§a?¡§??¨¢???¡ì¡§¡ã?bootCmdLoop??¨¬3? */
 #define INCLUDE_BOOTXSYS  
 #ifdef __cplusplus
     }

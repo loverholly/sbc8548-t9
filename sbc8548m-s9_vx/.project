@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>sbc8548m-s9_vx</name>
+	<comment></comment>
+	<projects>
+	</projects>
+	<buildSpec>
+		<buildCommand>
+			<name>com.windriver.ide.osconfig.core.wrbuilder</name>
+			<triggers>clean,full,incremental,</triggers>
+			<arguments>
+			</arguments>
+		</buildCommand>
+	</buildSpec>
+	<natures>
+		<nature>com.windriver.ide.osconfig.core.wrnature</nature>
+		<nature>com.windriver.ide.core.wrcorenature</nature>
+		<nature>org.eclipse.cdt.core.cnature</nature>
+		<nature>org.eclipse.cdt.core.ccnature</nature>
+	</natures>
+	<linkedResources>
+		<link>
+			<name>romStart.c</name>
+			<type>1</type>
+			<locationURI>WIND_HOME/vxworks-6.8/target/config/comps/src/romStart.c</locationURI>
+		</link>
+		<link>
+			<name>wrSbc8548</name>
+			<type>2</type>
+			<locationURI>WS_ROOT_DIR/SB8548M-s9_boot/wrSbc8548</locationURI>
+		</link>
+	</linkedResources>
+</projectDescription>
