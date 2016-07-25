@@ -74,8 +74,7 @@ TLB_ENTRY_DESC sysStaticTlbDesc [] =
      *
      * needed be first entry here
      */
-
-    { FLASH_BASE_ADRS, 0x0, FLASH_BASE_ADRS, _MMU_TLB_TS_0 | BOOT_FLASH_TLB_SIZE |
+    { 0xf0000000, 0x0, 0xf0000000, _MMU_TLB_TS_0 | _MMU_TLB_SZ_256M |
         _MMU_TLB_IPROT | _MMU_TLB_PERM_W | _MMU_TLB_PERM_X | _MMU_TLB_ATTR_I |
         _MMU_TLB_ATTR_G
     },
@@ -107,11 +106,10 @@ TLB_ENTRY_DESC sysStaticTlbDesc [] =
     }
 
 #endif /* INCLUDE_L2_SRAM */
-#ifdef INCLUDE_LBC_CS5
-
-    /* 16 MB of LBC CS5 area */
+#ifdef INCLUDE_LBC_CS3
+    /* 16 MB of LBC CS 3 area */
     , {
-        LBC_CS5_LOCAL_ADRS, 0x0, LBC_CS5_LOCAL_ADRS,
+        LBC_CS3_LOCAL_ADRS, 0x0, LBC_CS3_LOCAL_ADRS,
         _MMU_TLB_TS_0   | _MMU_TLB_SZ_16M | _MMU_TLB_IPROT |
         _MMU_TLB_PERM_W | _MMU_TLB_ATTR_I | _MMU_TLB_ATTR_G | _MMU_TLB_ATTR_M
     }
@@ -138,12 +136,6 @@ TLB_ENTRY_DESC sysStaticTlbDesc [] =
 
 #endif  /* INCLUDE_PCI_BUS */
 
-#ifdef INCLUDE_TFFS   
-    ,
-    { FLASH1_BASE_ADRS, 0x0, FLASH1_BASE_ADRS, _MMU_TLB_TS_0 | TFFS_FLASH_TLB_SIZE |
-        _MMU_TLB_ATTR_I | _MMU_TLB_ATTR_G | _MMU_TLB_PERM_W
-    }
-#endif
 
 };
 
@@ -237,17 +229,17 @@ PHYS_MEM_DESC sysPhysMemDesc [] =
     }
 #endif
 
-#ifdef INCLUDE_LBC_CS5
+#ifdef INCLUDE_LBC_CS3
     ,{
-        (VIRT_ADDR) LBC_CS5_LOCAL_ADRS,
-        (PHYS_ADDR) LBC_CS5_LOCAL_ADRS,
-        16 * 0x100000,
+        (VIRT_ADDR) LBC_CS3_LOCAL_ADRS,
+        (PHYS_ADDR) LBC_CS3_LOCAL_ADRS,
+        LBC_CS3_SIZE,
         VM_STATE_MASK_VALID | VM_STATE_MASK_WRITABLE | VM_STATE_MASK_CACHEABLE | \
         VM_STATE_MASK_GUARDED | VM_STATE_MASK_MEM_COHERENCY,
         VM_STATE_VALID      | VM_STATE_WRITABLE      | VM_STATE_CACHEABLE_NOT | \
         VM_STATE_GUARDED      | VM_STATE_MEM_COHERENCY
     }
-#endif /* INCLUDE_LBC_CS5 */
+#endif /* INCLUDE_LBC_CS3 */
 
 #ifdef INCLUDE_PCI_BUS
     ,
@@ -330,7 +322,7 @@ PHYS_MEM_DESC sysPhysMemDesc [] =
     {
         (VIRT_ADDR) FLASH_BASE_ADRS,
         (PHYS_ADDR) FLASH_BASE_ADRS,
-        FLASH_SIZE,
+        0x100000,
         VM_STATE_MASK_VALID | VM_STATE_MASK_WRITABLE | VM_STATE_MASK_CACHEABLE | \
         VM_STATE_MASK_GUARDED | VM_STATE_MASK_MEM_COHERENCY,
         VM_STATE_VALID      | VM_STATE_WRITABLE      | VM_STATE_CACHEABLE_NOT | \
@@ -340,7 +332,7 @@ PHYS_MEM_DESC sysPhysMemDesc [] =
     {
         (VIRT_ADDR) FLASH1_BASE_ADRS,
         (PHYS_ADDR) FLASH1_BASE_ADRS,
-        FLASH1_SIZE,
+        TOTAL_FLASH_SIZE,
         VM_STATE_MASK_VALID | VM_STATE_MASK_WRITABLE | VM_STATE_MASK_CACHEABLE | \
         VM_STATE_MASK_GUARDED | VM_STATE_MASK_MEM_COHERENCY,
         VM_STATE_VALID      | VM_STATE_WRITABLE      | VM_STATE_CACHEABLE_NOT | \
@@ -441,12 +433,6 @@ UINT32 ppcE500CACHE_ALIGN_SIZE = 32;
 #include "sysMotI2c.c"
 #include "sysMpc85xxI2c.c"
 
-#ifdef INCLUDE_NV_RAM
-    #include "eeprom.c"
-    #include <mem/byteNvRam.c>      /* Generic NVRAM routines */
-#else
-    #include <mem/nullNvRam.c>
-#endif /* INCLUDE_NV_RAM */
 
 
 #ifdef INCLUDE_L1_IPARITY_HDLR
@@ -477,9 +463,6 @@ IMPORT void sysSerialConnectAll(void);
 
 #define WB_MAX_IRQS 256
 
-#ifdef INCLUDE_SYSLED
-#  include "sysLed.c"
-#endif /* INCLUDE_SYSLED */
 
 /* defines */
 
@@ -556,23 +539,56 @@ LOCAL char * memTop = NULL;
 * ERRNO: N/A
 */
 
+/*在使能SPE的情况下，任务默认都加上SPE选项
+ * 如果不加SPE选项，但任务中使用了SPE指令，此时任务会抛出“SPE unavailable 
+exception“
+ * 在VX6.8的编译器中，SPE指令仅在使用浮点时使用，但在VX6.9编译器中，SPE
+指令可能在初始化超过8字节的数组时使用，
+ * 初始数组是很常用的操作，但用户可能不会觉察到此时已用到了SPE
+模块，所以我们默认将所有任务都加上浮点及SPE选项。
+ * 在speInit时首先会调用sysSpeProbe，所以可以确保mySpeCreateHook在SPE
+的初始化之前被调用,用于e500 core,这个经测试是必须要进行的.
+ */
+#include <taskLib.h>
+#include <taskHookLib.h>
+extern void 	reboot (int startType);
+LOCAL void mySpeCreateHook
+(
+		FAST WIND_TCB *pTcb		/* newly create task tcb */
+)
+{
+	pTcb->options |=VX_SPE_TASK|VX_FP_TASK;
+}
+
+void speEnableOnAllTask()
+{
+	taskCreateHookAdd((FUNCPTR)mySpeCreateHook);
+}
+
 int  sysSpeProbe (void)
+{
+    
+    int speUnitPresent = ERROR;
+#if (TOOL==e500v2diab) || (TOOL==e500v2gnu)  
+    UINT32 regVal;
+        /* The CPU type is indicated in the Processor Version Register (PVR) */
+    
+    regVal=vxPvrGet();
+    if((regVal & 0xfff00000)==0X80200000) /*only E500v2 support SPE*/
     {
-    ULONG regVal;
-    int speUnitPresent = OK;
+    	speUnitPresent=OK;
+    }
+    else
+    {
+    	sprintf((char *)sysExcMsg,"SPE unavailable,CORE is not E500v2,PVR=[0X%X] ,change you compiler please..\r\n",regVal);
+    	reboot(0);
+    }
 
-    /* The CPU type is indicated in the Processor Version Register (PVR) */
-
-    regVal = 0;
-
-    switch (regVal)
-        {
-        case 0:
-        default:
-            speUnitPresent = OK;
-            break;
-        }      /* switch  */
-
+    if(speUnitPresent==OK)
+    {
+    	speEnableOnAllTask();
+    }
+#endif   
     return(speUnitPresent);
     }
 #endif  /* INCLUDE_SPE */
@@ -859,18 +875,14 @@ void sysHwInit (void)
     vxHid1Set(vxHid1Get()| HID1_ASTME | HID1_RXFE); /* Address Stream Enable */
 
     /* enable the flash window */
-
+#if 0
     *M85XX_LAWBAR3(CCSBAR) = FLASH1_BASE_ADRS >> LAWBAR_ADRS_SHIFT;
     *M85XX_LAWAR3(CCSBAR)  = LAWAR_ENABLE | LAWAR_TGTIF_LBC | LAWAR_SIZE_64MB;
-    WRS_ASM("isync");
+#endif	
+    /* *M85XX_BR1(CCSBAR)   = FLASH1_BASE_ADRS | 0X1001; */
+	/* *M85XX_OR1(CCSBAR)   = FLASH1_ADRS_MASK | 0xcf0; */
 
-#if (BOOT_FLASH == ON_BOARD_FLASH)
-    *M85XX_BR6(CCSBAR) = 0xD0001801;
-    *M85XX_OR6(CCSBAR) = 0xFC006E65;
-#else
-    *M85XX_BR6(CCSBAR) = 0xFB800801;
-    *M85XX_OR6(CCSBAR) = 0xFF806E65;
-#endif
+
     WRS_ASM("isync");
 
 #ifdef INCLUDE_VXBUS
@@ -2000,3 +2012,21 @@ SIO_CHAN *BSP_SERIAL_CHAN_GET
     {
     return ((SIO_CHAN *)ERROR);
     }
+
+unsigned int cpu_timebase_get()
+{
+    UINT32 tbh,tbl;
+    vxTimeBaseGet(&tbh,&tbl);
+    return tbl;
+}
+
+/* 8548 clock base is CCB freq / 8 */
+unsigned int cpu_time_diff_us(unsigned int last)
+{
+    unsigned long long now;
+    UINT32 tbh,tbl;
+    vxTimeBaseGet(&tbh,&tbl);
+    now = 8 * (unsigned long long)(tbl - last)/(sysClkFreqGet() / 
+1000000);
+    return (unsigned int)now;
+}

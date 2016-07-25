@@ -139,8 +139,8 @@ modification history
 
 #define INCLUDE_VXBUS
 #define INCLUDE_VXB_CMDLINE
-
-#undef INCLUDE_RAPIDIO_BUS
+#define INCLUDE_SHELL_BANNER
+	
 
 /*
  * RAPIDIO supports only point to point shared memory support
@@ -226,9 +226,12 @@ modification history
 #define WDT_RATE_MIN         (sysTimerClkFreq / (1 << 29))
 #define WDT_RATE_MAX         (sysTimerClkFreq / (1 << 21))
 
-#define DEFAULT_BOOT_LINE \
-"motetsec(0,0)host:vxWorks h=192.168.0.1 e=192.168.0.2 \
-u=vxworks pw=vxworks f=0x0"
+#define DEFAULT_BOOT_LINE												\
+	"motetsec(0,0)host:vxWorks h=192.102.10.32 e=192.102.10.15 u=vxworks pw=vxworks f=0x0"
+		/* mac设备相关定义 */
+#define MAX_MAC_DEVS         4          /* two network devices (fcc, scc) */
+
+/* default mac address */
 
 #define INCLUDE_END
 
@@ -323,7 +326,8 @@ u=vxworks pw=vxworks f=0x0"
 
 #undef  NUM_TTY
 #define NUM_TTY 1
-
+#undef  CONSOLE_BAUD_RATE
+#define CONSOLE_BAUD_RATE       115200
 /* Clock rates */
 
 #define	SYS_CLK_RATE_MIN	1	/* minimum system clock rate */
@@ -559,43 +563,23 @@ IMPORT char* rioHostAdrs;
 #define FLASH_WINDOW_SIZE               0x00800000
 #define CDS85XX_FLASH_RESERVED_SIZE     0x00100000
 
-#if (BOOT_FLASH == ON_BOARD_FLASH)
 
 /* LBC CS0 - flash 0 - 8MB, 8-bit flash - default for bootrom */
 
-#define FLASH_BASE_ADRS                 0xff800000
-#define FLASH_ADRS_MASK                 0xff800000
-#define FLASH_SIZE                      0x00800000
+#define FLASH_BASE_ADRS                 0xfff00000
+#define FLASH_ADRS_MASK                 0xfff00000
 
-#define BOOT_FLASH_TLB_SIZE             _MMU_TLB_SZ_16M
+#define BOOT_FLASH_TLB_SIZE             _MMU_TLB_SZ_1M
 
 /* LBC CS6 - flash 1 - 64MB, 32-bit flash SODIMM - for TFFS */
 
-#define FLASH1_BASE_ADRS                0xd0000000
-#define FLASH1_ADRS_MASK                0xf0000000
-#define FLASH1_SIZE                     0x04000000
+#define FLASH1_BASE_ADRS                0xf8000000
+#define FLASH1_ADRS_MASK                0xfc000000
 
 #define TFFS_FLASH_TLB_SIZE             _MMU_TLB_SZ_64M
+#define TOTAL_FLASH_SIZE                0x4000000
 
-#else
 
-/* LBC CS0 - flash 0 - 64MB, 32-bit flash SODIMM - default for bootrom */
-
-#define FLASH_BASE_ADRS                 0xfc000000
-#define FLASH_ADRS_MASK                 0xfc000000
-#define FLASH_SIZE                      0x04000000
-
-#define BOOT_FLASH_TLB_SIZE             _MMU_TLB_SZ_64M
-
-/* LBC CS6 - flash 1 - 8MB, 8-bit flash */
-
-#define FLASH1_BASE_ADRS                0xfb800000
-#define FLASH1_ADRS_MASK                0xff800000
-#define FLASH1_SIZE                     0x00800000
-
-#define TFFS_FLASH_TLB_SIZE             _MMU_TLB_SZ_16M
-
-#endif
 
 /* LBC CS3 - SDRAM */
 
@@ -609,36 +593,46 @@ IMPORT char* rioHostAdrs;
 #define LBC_SDRAM_LOCAL_ADRS       LOCAL_MEM_LOCAL_ADRS2
 #define LBC_SDRAM_LOCAL_SIZE       LOCAL_MEM_SIZE2
 
-/* LBC CS5 - EEPROM, user LEDs, user switches (decoded in EPLD) */
+/* LBC CS3 - nvram, cadmus, ATM phy */
 
-#define INCLUDE_LBC_CS5
+#define INCLUDE_LBC_CS3
 
-#ifdef INCLUDE_LBC_CS5
-#define INCLUDE_NV_RAM
-#define LBC_CS5_LOCAL_ADRS       0xf8000000
-#define LBC_CS5_LOCAL_SIZE_MASK  0xff000000
+#ifdef INCLUDE_LBC_CS3
+#define LBC_CS3_LOCAL_ADRS       0xf0100000
+#define LBC_CS3_LOCAL_SIZE_MASK  0xfff00000
+#define LBC_CS3_SIZE             0x0100000
 #endif
 
-/* NVRAM configuration */
 
-#ifdef  INCLUDE_NV_RAM
-#   define NV_RAM_ADRS          (LBC_CS5_LOCAL_ADRS + 0x00b00000)
-#   undef  NV_RAM_SIZE
-#   define NV_RAM_SIZE          (0x2000 - 0x10)  /* 8KB - 16 */
-#   define NV_RAM_INTRVL        1
-#   undef  NV_BOOT_OFFSET
-#   define NV_BOOT_OFFSET       0
+#define INCLUDE_FLASH
+
+#ifdef INCLUDE_FLASH
+
+/* NVRam */
+
+#   define FLASH_ADRS           FLASH1_BASE_ADRS
+#   define FLASH_SPACE_SIZE     TOTAL_FLASH_SIZE
+#   define FLASH_WIDTH          2
+#   define FLASH_CHIP_WIDTH     2
+#   define FLASH_SECTOR_SIZE    0x00020000
+#   define FLASH_SECTOR_MASK    0xfffe0000
+#   define NV_RAM_ADRS          (FLASH1_BASE_ADRS)
+#   define NV_RAM_SIZE          0X100000
 #   define NV_MAC_ADRS_OFFSET   0x200
-#else
-#   define NV_RAM_SIZE 0
-#   define NV_RAM_ADRS 0
-#endif  /* INCLUDE_NV_RAM */
 
-/* User switches */
+/* board specific flash configuration needed by MTD driver */
 
-#ifdef INCLUDE_SWITCHES
-#define SWITCH_ADRS         (LBC_CS5_LOCAL_ADRS + 0x00100000)
-#endif /* INCLUDE_SWITCHES */
+#   define S29GL_FLASH_BIT      1           /* 16-bit */
+#   define S29GL_FLASH_NUM      1           /* only one chip */
+#   define S29GL_FLASH_WIDTH    2           /* 16-bit */
+#   define S29GL_SECTOR_SIZE    0x00020000  /* 128K per sector */
+#   define S29GL_FLASH_SIZE     0x04000000  /* only 64MB used for TureFFS */
+#   define S29GL_FLASH_OP_DELAY
+
+#endif  /* INCLUDE_FLASH */
+
+
+
 
 /* Memory addresses */
 
@@ -724,7 +718,6 @@ IMPORT char* rioHostAdrs;
 
 #define USER_RESERVED_MEM 0x000000
 
-#define INCLUDE_SYSLED
 
 #ifndef MAX_MAC_DEVS
 #   define MAX_MAC_DEVS     1
@@ -790,7 +783,15 @@ IMPORT char* rioHostAdrs;
 #   define INCLUDE_FS_EVENT_UTIL
 #   define INCLUDE_DEVICE_MANAGER
 #endif
-
+  
+#define INCLUDE_TFFS
+#define INCLUDE_TFFS_MOUNT		
+#define INCLUDE_DOSFS
+#define INCLUDE_DOSFS_MAIN
+#define INCLUDE_BOOT_FILESYSTEMS
+/* TrueFFS flash support */
+		/* ¨?¨a?¨??á???§¨°?bootCmdLoop??ì3? */
+#define INCLUDE_BOOTXSYS  
 #ifdef __cplusplus
     }
 #endif /* __cplusplus */

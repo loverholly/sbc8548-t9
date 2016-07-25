@@ -66,6 +66,10 @@ LIB_EXTRA        =
 
 VMA_START        = 0x0
 USR_ENTRY        = usrInit
+#USRCONFIG        =./all/usrConfig.c
+#BOOTINIT         =./all/bootInit.c
+
+CONFIG_ALL       = ./all
 ## Only redefine make definitions above this point, or the expansion of 
 ## makefile target dependencies may be incorrect.
 

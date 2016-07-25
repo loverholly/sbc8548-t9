@@ -79,7 +79,7 @@ const struct hcfResource tsecVxbEnd0Resources[] = {
     { "intr1Level",     HCF_RES_INT,    { (void *)EPIC_TSEC1RX_INT_VEC } },
     { "intr2",          HCF_RES_INT,    { (void *)EPIC_TSEC1ERR_INT_VEC } },
     { "intr2Level",     HCF_RES_INT,    { (void *)EPIC_TSEC1ERR_INT_VEC } },
-    { "phyAddr",        HCF_RES_INT,    { (void *)25 } },
+    { "phyAddr",	HCF_RES_INT,	{ (void *)1 } },
     { "miiIfName",      HCF_RES_STRING, { (void *)XTSEC_NAME } },
     { "miiIfUnit",      HCF_RES_INT,    { (void *)0 } }
 };
@@ -93,7 +93,7 @@ const struct hcfResource tsecVxbEnd1Resources[] = {
     { "intr1Level",     HCF_RES_INT,    { (void *)EPIC_TSEC2RX_INT_VEC } },
     { "intr2",          HCF_RES_INT,    { (void *)EPIC_TSEC2ERR_INT_VEC } },
     { "intr2Level",     HCF_RES_INT,    { (void *)EPIC_TSEC2ERR_INT_VEC } },
-    { "phyAddr",        HCF_RES_INT,    { (void *)26 } },
+    { "phyAddr",	HCF_RES_INT,	{ (void *)2 } },
     { "miiIfName",      HCF_RES_STRING, { (void *)XTSEC_NAME } },
     { "miiIfUnit",      HCF_RES_INT,    { (void *)0 } }
 };
@@ -108,7 +108,7 @@ const struct hcfResource tsecVxbEnd2Resources[] = {
     { "intr1Level",     HCF_RES_INT,    { (void *)EPIC_TSEC3RX_INT_VEC } },
     { "intr2",          HCF_RES_INT,    { (void *)EPIC_TSEC3ERR_INT_VEC } },
     { "intr2Level",     HCF_RES_INT,    { (void *)EPIC_TSEC3ERR_INT_VEC } },
-    { "phyAddr",        HCF_RES_INT,    { (void *)27 } },
+    { "phyAddr",	HCF_RES_INT,	{ (void *)3 } },
     { "miiIfName",      HCF_RES_STRING, { (void *)XTSEC_NAME } },
     { "miiIfUnit",      HCF_RES_INT,    { (void *)0 } },
 };
@@ -122,7 +122,7 @@ const struct hcfResource tsecVxbEnd3Resources[] = {
     { "intr1Level",     HCF_RES_INT,    { (void *)EPIC_TSEC4RX_INT_VEC } },
     { "intr2",          HCF_RES_INT,    { (void *)EPIC_TSEC4ERR_INT_VEC } },
     { "intr2Level",     HCF_RES_INT,    { (void *)EPIC_TSEC4ERR_INT_VEC } },
-    { "phyAddr",        HCF_RES_INT,    { (void *)28 } },
+    { "phyAddr",	HCF_RES_INT,	{ (void *)4 } },
     { "miiIfName",      HCF_RES_STRING, { (void *)XTSEC_NAME } },
     { "miiIfUnit",      HCF_RES_INT,    { (void *)0 } },
 };

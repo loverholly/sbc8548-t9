@@ -128,6 +128,14 @@ start:
 	lis     r6, 0x80
 	stw     r6, 0(r5)
 		
+	/* 使能time base  */
+	xor     r6,r6,r6
+	xor     r7,r7,r7
+    mfspr   r6, 1008
+    lis     r7,HI(0x00004000)
+    ori     r7,r7,LO(0x00004000)
+    or      r6, r6, r7
+    mtspr   1008, r6
 	xor     r6,r6,r6
 	xor     r7,r7,r7
 	mullw   r7,r7,r6
@@ -303,16 +311,7 @@ FUNC_LABEL(_resetEntry)
 	tlbivax r4,r3
 	nop
 
-	b postTable
-platpllTable:
-	.long 0x00000203
-	.long 0x04050607
-	.long 0x08091000
-	.long 0x12000000
-	.long 0x16000000
-	.long 0x20000000
-postTable:
-
+	
         /*
          * Write TLB entry for initial program memory page
          *
@@ -394,7 +393,33 @@ postTable:
         tlbwe
         tlbsync
 
+#if (LOCAL_MEM_SIZE > 0x10000000)
+        /*
+         * TLB1 #2.  Additional SDRAM - not cached 
+	 *           LOCAL_MEM_LOCAL_ADRS2 -> LOCAL_MEM_LOCAL_ADRS2 + LOCAL_MEM_SIZE
+         * Attributes: UX/UW/UR/SX/SW/SR
+         */
 
+        addis  r4,0,0x1003          /* TLBSEL = TLB1(CAM) , ESEL = 2*/
+        ori    r4,r4,0x0000
+        mtspr  MAS0, r4
+        addis  r5,0,0xc000           /* V = 1, IPROT = 0, TID = 0*/
+        ori    r5,r5,_MMU_TLB_SZ_256M /* TS = 0, TSIZE = 64 MByte page size*/
+        mtspr  MAS1, r5
+        addis  r6,0,HI(LOCAL_MEM_LOCAL_ADRS + 0x10000000) /* EPN = LOCAL_MEM_LOCAL_ADRS2 */
+        ori    r6,r6,0x000a          /* WIMGE = 01010 */
+        mtspr  MAS2, r6
+
+        addis  r7,0,HI(LOCAL_MEM_LOCAL_ADRS + 0x10000000) /* RPN = LOCAL_MEM_LOCAL_ADRS2 */
+        ori    r7,r7,0x0015          /* Supervisor XWR*/
+        mtspr  MAS3, r7
+        isync
+        msync
+        tlbwe                       
+        tlbsync                      
+#endif
+
+			
 	/* Setup the memory mapped register address */
 
 	isync
@@ -440,34 +465,19 @@ ccsrbarWait:
 
 	isync
 
-#if (BOOT_FLASH == ON_BOARD_FLASH)
 	/* load BR0 */
-
-	WRITEADR(r6,r7,M85XX_BR0 (CCSBAR),0xff800801)
+	WRITEADR(r6,r7,M85XX_BR0 (CCSBAR),FLASH_BASE_ADRS|0x1001)
 	/* load OR0 */
+	WRITEADR(r6,r7,M85XX_OR0 (CCSBAR),FLASH_ADRS_MASK|0xc80)
 
-	WRITEADR(r6,r7,M85XX_OR0 (CCSBAR),0xff806e65)
-#else
-    /* load BR0 */
-
-    WRITEADR(r6,r7,M85XX_BR0 (CCSBAR),0xfc001801)
-    /* load OR0 */
-
-    WRITEADR(r6,r7,M85XX_OR0 (CCSBAR),0xfc006e65)
-#endif
-    isync
-
-#ifdef INCLUDE_LBC_CS5
-
-	/* load BR5 */
-
-        WRITEADR(r6,r7,M85XX_BR5 (CCSBAR),0xf8000801)
-
-	/* load OR5 */
-
-	WRITEADR(r6,r7,M85XX_OR5 (CCSBAR),0xff006E65)
 	isync
-#endif /* INCLUDE_LBC_CS5 */
+	sync
+	mbar 0
+
+	/* load BR1 */
+	WRITEADR(r6,r7,M85XX_BR1 (CCSBAR),FLASH1_BASE_ADRS|0x1001)
+	/* load OR1 */
+	WRITEADR(r6,r7,M85XX_OR1 (CCSBAR),FLASH1_ADRS_MASK|0xc80)
 
 	isync
 	sync
@@ -477,10 +487,10 @@ ccsrbarWait:
 
 	li      r4,0x2000
 	mtctr   r4
-	WRITEADR(r6,r7,M85XX_DCR0(CCSBAR),0xbc0f1bf0)
-	WRITEADR(r6,r7,M85XX_DCR1(CCSBAR),0x00078080)
-	WRITEADR(r6,r7,M85XX_LCRR(CCSBAR),0x00000002)
-
+	WRITEADR(r6,r7,M85XX_DCR0(CCSBAR),0xbc0f1bf0) 
+	WRITEADR(r6,r7,M85XX_DCR1(CCSBAR),0x00078080) 
+	WRITEADR(r6,r7,M85XX_LCRR(CCSBAR),0x80030004)/* lbc分频为8,50MHz */ 
+	
 	isync
 	sync
 	mbar 0
@@ -494,111 +504,42 @@ dllDelay4:
 
 	WRITEADR(r6,r7,M85XX_LAWBAR1(CCSBAR),
 		 DDR_SDRAM_LOCAL_ADRS >> LAWBAR_ADRS_SHIFT)
-
-	WRITEADR(r6,r7,M85XX_LAWAR1(CCSBAR),
-		 LAWAR_ENABLE | LAWAR_TGTIF_DDRSDRAM | LAWAR_SIZE_256MB )
+	 
+	WRITEADR(r6,r7,M85XX_LAWAR1(CCSBAR), 
+		 LAWAR_ENABLE | LAWAR_TGTIF_DDRSDRAM | LAWAR_SIZE_512MB ) 
 
 	isync
 
-	lis	r7, HI(M85XX_PORPLLSR(CCSBAR))
-	ori     r7, r7, LO(M85XX_PORPLLSR(CCSBAR))
-	lwz     r7, 0(r7)
-	andi.   r7, r7, 0x3e
-	srwi    r7, r7, 1
-
-	/* Get multiplier from table */
-
-	lis     r8, HI(0xffffffff)
-	ori     r8, r8, LO(platpllTable)
-	add     r8, r8, r7
-	lbz     r8, 0(r8)
-
-	cmpwi   r8,0 /* Test for unsupported freq */
-	beq     checkStop  /* Jump to 0 */
-
+	
 	/* Initialize the DDR Memory controller */
 
         lis	r6, HI(DDRBA)
         ori	r6, r6, LO(DDRBA)		/* r6 = DDR base */
 
-	WRITEOFFSET(r6,r7,(DDR_SDRAM_CLK_CTRL), 0x03800000)
-
 	WRITEOFFSET(r6,r7,(CS0_BNDS), 0x0000000f)
 	WRITEOFFSET(r6,r7,(CS1_BNDS), 0x00000000)
 	WRITEOFFSET(r6,r7,(CS2_BNDS), 0x00000000)
 	WRITEOFFSET(r6,r7,(CS3_BNDS), 0x00000000)
-	WRITEOFFSET(r6,r7,(CS0_CONFIG), 0x80010101)
+	WRITEOFFSET(r6,r7,(CS0_CONFIG), 0x80014102) /* 13row 10colomn,8bank */
 	WRITEOFFSET(r6,r7,(CS1_CONFIG), 0x00000000)
 	WRITEOFFSET(r6,r7,(CS2_CONFIG), 0x00000000)
 	WRITEOFFSET(r6,r7,(CS3_CONFIG), 0x00000000)
-
-	/* comparison assumes 33Mhz clk */
-#if 0
-	cmpwi   r8, PLAT_RATIO_533_MHZ
-	beq     defaultDDRInit
-#endif
-	cmpwi   r8, PLAT_RATIO_400_MHZ
-	beq     DDRInit400
-	cmpwi   r8, PLAT_RATIO_333_MHZ
-	beq     DDRInit333
-#if 0
-defaultDDRInit:
-
 	WRITEOFFSET(r6,r7,(DDR_SDRAM_CLK_CTRL), 0x03800000)
 	WRITEOFFSET(r6,r7,(EXTENDED_REF_REC), 0x00010000)
-	WRITEOFFSET(r6,r7,(TIMING_CFG_0), 0x00220802)
-	WRITEOFFSET(r6,r7,(TIMING_CFG_1), 0x38377322)
-	WRITEOFFSET(r6,r7,(TIMING_CFG_2), 0x0fa044c7)
-	WRITEOFFSET(r6,r7,(DDR_SDRAM_CFG), 0x4300c000)
-	WRITEOFFSET(r6,r7,(DDR_SDRAM_CFG_2), 0x24401000)
-
-	WRITEOFFSET(r6,r7,(DDR_SDRAM_MODE_CFG), 0x23c00542)
-	WRITEOFFSET(r6,r7,(DDR_SDRAM_MODE_CFG_2), 0x00000000)
-	WRITEOFFSET(r6,r7,(DDR_SDRAM_MD_CNTL), 0x0)
-	WRITEOFFSET(r6,r7,(DDR_SDRAM_INTERVAL), 0x05080100)
-	WRITEOFFSET(r6,r7,(DDR_DATA_INIT), 0x0000000)
-	WRITEOFFSET(r6,r7,(0xf08), 0x0000200)
-
-	b finalDDRInit
-#endif
-DDRInit400:
-
-	WRITEOFFSET(r6,r7,(DDR_SDRAM_CLK_CTRL), 0x03800000)
-	WRITEOFFSET(r6,r7,(EXTENDED_REF_REC), 0x00010000)
-	WRITEOFFSET(r6,r7,(TIMING_CFG_0), 0x00220802)
-	WRITEOFFSET(r6,r7,(TIMING_CFG_1), 0x38377322)
-	WRITEOFFSET(r6,r7,(TIMING_CFG_2), 0x0fa044c7)
-	WRITEOFFSET(r6,r7,(DDR_SDRAM_CFG), 0x4300c000)
-	WRITEOFFSET(r6,r7,(DDR_SDRAM_CFG_2), 0x24401000)
-
-	WRITEOFFSET(r6,r7,(DDR_SDRAM_MODE_CFG), 0x23c00542)
-	WRITEOFFSET(r6,r7,(DDR_SDRAM_MODE_CFG_2), 0x00000000)
-	WRITEOFFSET(r6,r7,(DDR_SDRAM_MD_CNTL), 0x0)
-	WRITEOFFSET(r6,r7,(DDR_SDRAM_INTERVAL), 0x05080100)
-	WRITEOFFSET(r6,r7,(DDR_DATA_INIT), 0x0000000)
-	WRITEOFFSET(r6,r7,(0xf08), 0x0000200)
-
-	b finalDDRInit
-
-DDRInit333:
-
-	WRITEOFFSET(r6,r7,(DDR_SDRAM_CLK_CTRL), 0x03800000)
-	WRITEOFFSET(r6,r7,(EXTENDED_REF_REC), 0x00000000)
 	WRITEOFFSET(r6,r7,(TIMING_CFG_0), 0x00260802)
-	WRITEOFFSET(r6,r7,(TIMING_CFG_1), 0x38357322)
-	WRITEOFFSET(r6,r7,(TIMING_CFG_2), 0x14904cc8)
-	WRITEOFFSET(r6,r7,(DDR_SDRAM_CFG), 0x63008000)
-	WRITEOFFSET(r6,r7,(DDR_SDRAM_CFG_2), 0x24400000)
-
-	WRITEOFFSET(r6,r7,(DDR_SDRAM_MODE_CFG), 0x00480432)
-	WRITEOFFSET(r6,r7,(DDR_SDRAM_MODE_CFG_2), 0x00000000)
+	WRITEOFFSET(r6,r7,(TIMING_CFG_1), 0x3919c712)
+	WRITEOFFSET(r6,r7,(TIMING_CFG_2), 0x04a04cc8)
+	WRITEOFFSET(r6,r7,(DDR_SDRAM_CFG), 0x43088000)
+	WRITEOFFSET(r6,r7,(DDR_SDRAM_CFG_2), 0x24401000)
+	WRITEOFFSET(r6,r7,(DDR_SDRAM_MODE_CFG), 0x00400c52)
+	WRITEOFFSET(r6,r7,(DDR_SDRAM_MODE_CFG_2), 0x8000c000)
 	WRITEOFFSET(r6,r7,(DDR_SDRAM_MD_CNTL), 0x0)
-	WRITEOFFSET(r6,r7,(DDR_SDRAM_INTERVAL), 0x05200100)
-	WRITEOFFSET(r6,r7,(DDR_DATA_INIT), 0x0000000)
+	WRITEOFFSET(r6,r7,(DDR_SDRAM_INTERVAL), 0x0c150100)
+	WRITEOFFSET(r6,r7,(DDR_DATA_INIT), 0xdeadbeef)
+	WRITEOFFSET(r6,r7,(0xf08), 0x00000015)
+	b finalDDRInit
 
-	WRITEOFFSET(r6,r7,(0xf08), 0x0000200)
-
-finalDDRInit:
+	finalDDRInit:
 	lis    r4,HI(CCSBAR|DDR_IO_OVCR)
 	ori    r4,r4,LO(CCSBAR|DDR_IO_OVCR)
 	lis    r7,0x9000
@@ -612,149 +553,45 @@ ddrDelay:
 	nop
 	bdnz    ddrDelay
 
-#ifdef INCLUDE_DDR_ECC
-	WRITEOFFSET(r6,r7,(DDR_SDRAM_CFG), 0xE3008000)
-#else /* INCLUDE_DDR_ECC */
-	WRITEOFFSET(r6,r7,(DDR_SDRAM_CFG), 0xC300C000)
-#endif /* INCLUDE_DDR_ECC */
+	#ifdef INCLUDE_DDR_ECC
+	WRITEOFFSET(r6,r7,(DDR_SDRAM_CFG), 0xE3088000)
+	#else /* INCLUDE_DDR_ECC */
+	WRITEOFFSET(r6,r7,(DDR_SDRAM_CFG), 0xc3088000)
+	#endif /* INCLUDE_DDR_ECC */
 
 	isync
-
+	
 #endif /* INCLUDE_DDR_SDRAM */
 
 
-
-#ifdef INCLUDE_LBC_CS4
-
-	/* load OR4 */
-
-        WRITEADR(r6,r7,M85XX_OR4 (CCSBAR),(LBC_SDRAM_LOCAL_SIZE_MASK & \
-                                  0xffff0000) | 0x6CC0)
-
-	/* load BR4 */
-
-        WRITEADR(r6,r7,M85XX_BR4 (CCSBAR),((LBC_SDRAM_LOCAL_ADRS + \
-                                 0x4000000) & 0xffff0000) | 0x1861)
-
-        mbar 0
-
-#endif /* INCLUDE_LBC_CS4 */
-
-#ifdef INCLUDE_LBC_SDRAM
-
-	/* Initialise SDRAM */
-
-SdramInit:
+		
+#ifdef INCLUDE_LBC_CS3
 
 
 	/* load OR3 */
 
-	WRITEADR(r6,r7,M85XX_OR3 (CCSBAR),(LBC_SDRAM_LOCAL_SIZE_MASK & \
-	                                   0xffff0000) | 0x6CC0)
+	WRITEADR(r6,r7,M85XX_OR3 (CCSBAR),(LBC_CS3_LOCAL_SIZE_MASK & 0xffff0000) | 0x0c80)
 
 	/* load BR3 */
+	WRITEADR(r6,r7,M85XX_BR3 (CCSBAR), \
+		 (LBC_CS3_LOCAL_ADRS & 0xffff0000) | \
+		 0x0801)
 
-	WRITEADR(r6,r7,M85XX_BR3 (CCSBAR),(LBC_SDRAM_LOCAL_ADRS & 0xffff0000) \
-	                                   | 0x1861)
+        mbar 0
 
-	/* Pre-charge all banks */
+#endif /* INCLUDE_LBC_CS3 */
+	
 
-	WRITEADR(r6,r7,M85XX_LSDMR(CCSBAR),0x2863B727)
-
-	lis     r9,HIADJ(LBC_SDRAM_LOCAL_ADRS)
-        addi    r9, r9, LO(LBC_SDRAM_LOCAL_ADRS)
-
-	/* do a single write to an arbitrary location */
-
-	addi    r5,0,0x00FF      /* Load 0x000000FF into r5 */
-	stb     r5,0(r9)         /* Write 0xFF to SDRAM address - bits [24-31] */
-	mbar 0
-
-	/* issue a "Auto Refresh" command to SDRAM */
-
-	WRITEADR(r6,r7,M85XX_LSDMR(CCSBAR),0x0863B727)
-
-	/* do a single write to an arbitrary location */
-
-	addi    r5,0,0x00FF      /* Load 0x000000FF into r5 */
-	stb     r5,0(r9)         /* Write 0xFF to SDRAM address - bits [24-31] */
-	mbar 0
-
-	/* issue a "Auto Refresh" command to SDRAM */
-
-	WRITEADR(r6,r7,M85XX_LSDMR(CCSBAR),0x0863B727)
-
-	/* do a single write to an arbitrary location */
-
-	addi    r8,0,0x00FF      /* Load 0x000000FF into r8 */
-
-	stb     r8,0(r9)         /* Write 0xFF to address R9  */
-	stb     r8,1(r9)         /* Write 0xFF to address R9  */
-	stb     r8,2(r9)         /* Write 0xFF to address R9  */
-	stb     r8,3(r9)         /* Write 0xFF to address R9  */
-	stb     r8,4(r9)         /* Write 0xFF to address R9  */
-	stb     r8,5(r9)         /* Write 0xFF to address R9  */
-	stb     r8,6(r9)         /* Write 0xFF to address R9  */
-	stb     r8,7(r9)         /* Write 0xFF to address R9  */
-
-	/* issue a "Mode Register Write" command to SDRAM */
-
-	WRITEADR(r6,r7,M85XX_LSDMR(CCSBAR),0x1863B727)
-
-	/* do a single write to an arbitrary location */
-
-	addi    r8,0,0x00FF      /* Load 0x000000FF into r8 */
-	stb     r8,0(r9)         /* Write 0xFF to address R9 - bits [24-31] */
-
-	/* enable refresh services and put SDRAM into normal operation  */
-
-	WRITEADR(r6,r7,M85XX_LSDMR(CCSBAR),0x4063B723)
-
-	/* program the MRTPR */
-
-	addi    r5,0,TPR	 /* MRTPR[TPR] */
-        lis     r6, HIADJ (M85XX_MRTPR (CCSBAR))
-        addi    r6, r6, LO (M85XX_MRTPR (CCSBAR))
-	sth     r5, 0x0 (r6)      /* store upper half-word */
-
-	/* program the LSRT */
-
-	addi    r5,0,LSRT_VALUE
-        lis     r6, HIADJ (M85XX_LSRT (CCSBAR))
-        addi    r6, r6, LO (M85XX_LSRT (CCSBAR))
-	stb     r5, 0x0 (r6)      /* store byte - bits[24-31] */
-
-	mbar 0
-
-	lis     r9, HI(LBC_SDRAM_LOCAL_ADRS)
-	ori     r9,r9, LO(LBC_SDRAM_LOCAL_ADRS)
-
-	lis	r7, HIADJ(0x100)      /* Loop 256 times */
-	addi    r7, r7, LO(0x100)
-	mtspr	9,r7             /* Load spr CTR with 8 */
-	lis 	r8,0x5555      /* Load 0x000000FF into r8 */
-        ori     r8,r8,0x5555
-
-SdramWrLoop2:
-
-	stw  	r8,0(r9)        	/* Write 0xFF to address R9 */
-	addi    r9,r9,4                 /* Move R9 to next byte */
-	addi    r8,r8,1                 /* Add 1 to r8 */
-	bc   	16,0,SdramWrLoop2	/* Decrement CTR, and possibly branch */
-#endif  /* INCLUDE_LBC_SDRAM */
-
-	/*
-	 * Now that memory is stable we reset TLB entries for standard
-	 * operation
+	/* Now that memory is stable we reset TLB entries for standard 
+	 * operation 
 	 */
-
         /*
-         * TLB1 #0.  ROM - writethrough cached 0xff000000 -> 0xff000000.
+         * TLB1 #0.  ROM - writethrough cached 0xf0000000 -> 0xffffffff.  
 	 * 16MB
          * Attributes: SX/SW/SR **PROTECTED**
          */
 
-        addis  r4,0,0x1000           /* TLBSEL = TLB1(CAM) , ESEL = 0 */
+        addis  r4,0,0x1000           /* TLBSEL = TLB1(CAM) , ESEL = 0 */ 
         ori    r4,r4,0x0000
         mtspr  MAS0, r4
         addis  r5,0,0xc000           /* V = 1, IPROT = 1, TID = 0*/
@@ -763,15 +600,15 @@ SdramWrLoop2:
         addis  r6,0,0xf000           /* EPN = 0xff000000*/
         ori    r6,r6,0x0016          /* WIMGE = 10110 */
         mtspr  MAS2, r6
-        addis  r7,0,0xf000           /* RPN = 0xff000000*/
+        addis  r7,0,0xf000           /* RPN = 0xf0000000*/
         ori    r7,r7,0x0015          /* Supervisor XWR*/
         mtspr  MAS3, r7
-        tlbwe
-        tlbsync
+        tlbwe         
+        tlbsync                     
 
         /*
          * TLB1 #1.  Main SDRAM - Cached with Coherence
-	 * LOCAL_MEM_LOCAL_ADRS -> LOCAL_MEM_LOCAL_ADRS + LOCAL_MEM_SIZE
+	 *           LOCAL_MEM_LOCAL_ADRS -> LOCAL_MEM_LOCAL_ADRS + LOCAL_MEM_SIZE
          * Attributes: UX/UW/UR/SX/SW/SR
          */
 
@@ -787,16 +624,17 @@ SdramWrLoop2:
         addis  r7,0,HI(LOCAL_MEM_LOCAL_ADRS)  /* RPN = LOCAL_MEM_LOCAL_ADRS */
         ori    r7,r7,0x003f          /* User/Supervisor XWR*/
         mtspr  MAS3, r7
-        tlbwe
-        tlbsync
+        tlbwe                       
+        tlbsync                              
+
 
         /*
-         * TLB1 #2.  CCSRBAR - guarded 0xe0000000 -> 0xe0000000.
+         * TLB1 #2.  CCSRBAR - guarded 0xe0000000 -> 0xe0000000.  
 	 * 16MB
          * Attributes: SX/SW/SR
          */
 
-        addis  r4,0,0x1002           /* TLBSEL = TLB1(CAM) , ESEL = 0 */
+        addis  r4,0,0x1002           /* TLBSEL = TLB1(CAM) , ESEL = 0 */ 
         ori    r4,r4,0x0000
         mtspr  MAS0, r4
         addis  r5,0,0xc000           /* V = 1, IPROT = 0, TID = 0*/
@@ -808,12 +646,33 @@ SdramWrLoop2:
         addis  r7,0,HI(CCSBAR)           /* RPN = 0xe0000000*/
         ori    r7,r7,0x003f          /* Supervisor XWR*/
         mtspr  MAS3, r7
+        tlbwe         
+        tlbsync   
+	   
+#if (LOCAL_MEM_SIZE > 0x10000000)
+        /*
+         * TLB1 #3.  Main SDRAM - Cached with coherence
+         *           LOCAL_MEM_LOCAL_ADRS -> LOCAL_MEM_LOCAL_ADRS + LOCAL_MEM_SIZE
+         * Attributes: UX/UW/UR/SX/SW/SR
+         */
+
+        addis  r4,0,0x1003           /* TLBSEL = TLB1(CAM) , ESEL = 2*/
+        ori    r4,r4,0x0000
+        mtspr  MAS0, r4
+        addis  r5,0,0xc000           /* V = 1, IPROT = 1, TID = 0*/
+        ori    r5,r5,_MMU_TLB_SZ_256M  /* TS = 0, TSIZE = 256 MByte page size*/
+        mtspr  MAS1, r5
+        addis  r6,0,0x1000         /* EPN = LOCAL_MEM_LOCAL_ADRS */
+        ori    r6,r6,0x0004          /* WIMGE = 00000 */
+        mtspr  MAS2, r6
+        addis  r7,0,0x1000         /* RPN = LOCAL_MEM_LOCAL_ADRS */
+        ori    r7,r7,0x003f          /* User/Supervisor XWR*/
+        mtspr  MAS3, r7
         tlbwe
         tlbsync
-
-        b  cold
-checkStop:
-	ba 0x0
+#endif	 
+	               
+        b  cold			
 FUNC_END(resetEntry)
 
 
