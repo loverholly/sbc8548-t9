@@ -583,7 +583,7 @@ IMPORT char* rioHostAdrs;
 
 /* LBC CS3 - SDRAM */
 
-#define INCLUDE_LBC_SDRAM
+/* #define INCLUDE_LBC_SDRAM */
 
 /* NOTE this should match the LAWAR SIZE in romInit for the chosen SDRAM */
 

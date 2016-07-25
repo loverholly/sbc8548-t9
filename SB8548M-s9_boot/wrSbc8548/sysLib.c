@@ -88,15 +88,12 @@ TLB_ENTRY_DESC sysStaticTlbDesc [] =
 
     { CCSBAR, 0x0, CCSBAR, _MMU_TLB_TS_0 | _MMU_TLB_SZ_1M |
         _MMU_TLB_ATTR_I | _MMU_TLB_ATTR_G | _MMU_TLB_PERM_W | _MMU_TLB_IPROT
-    }
+    },
 
-#ifdef INCLUDE_LBC_SDRAM
-    ,
-    { LOCAL_MEM_LOCAL_ADRS2, 0x0, LOCAL_MEM_LOCAL_ADRS2, _MMU_TLB_TS_0 |
-        _MMU_TLB_SZ_64M | _MMU_TLB_PERM_W | _MMU_TLB_PERM_X |
-        CAM_DRAM_CACHE_MODE | _MMU_TLB_ATTR_M | _MMU_TLB_IPROT
+    /* All these are not protected */
+    { CCSBAR, 0x0, CCSBAR, _MMU_TLB_TS_1 | _MMU_TLB_SZ_1M |
+        _MMU_TLB_ATTR_I | _MMU_TLB_ATTR_G | _MMU_TLB_PERM_W
     }
-#endif /* LBC_SDRAM */
 
 #ifdef INCLUDE_L2_SRAM
     ,
@@ -135,7 +132,25 @@ TLB_ENTRY_DESC sysStaticTlbDesc [] =
     }
 
 #endif  /* INCLUDE_PCI_BUS */
-
+    ,
+    {
+    0xf0000000, 0x0, 0xf0000000,
+    _MMU_TLB_TS_1   | _MMU_TLB_SZ_256M  | 0   |
+    _MMU_TLB_PERM_W | _MMU_TLB_PERM_X   | _MMU_TLB_ATTR_I  |
+    _MMU_TLB_ATTR_G
+    }, 
+	 {
+    0xb0000000, 0x0, 0xb0000000,
+    _MMU_TLB_TS_1   | _MMU_TLB_SZ_256M  | 0   |
+    _MMU_TLB_PERM_W | _MMU_TLB_PERM_X   | _MMU_TLB_ATTR_I  |
+    _MMU_TLB_ATTR_G
+    },
+     {
+    0xc0000000, 0x0, 0xc0000000,
+    _MMU_TLB_TS_1   | _MMU_TLB_SZ_256M  | 0   |
+    _MMU_TLB_PERM_W | _MMU_TLB_PERM_X   | _MMU_TLB_ATTR_I  |
+    _MMU_TLB_ATTR_G
+    }, 
 
 };
 
@@ -191,33 +206,6 @@ PHYS_MEM_DESC sysPhysMemDesc [] =
         VM_STATE_MASK_VALID | VM_STATE_MASK_WRITABLE | VM_STATE_MASK_CACHEABLE | VM_STATE_MASK_MEM_COHERENCY,
         VM_STATE_VALID      | VM_STATE_WRITABLE      | TLB_CACHE_MODE | VM_STATE_MEM_COHERENCY
     }
-    ,
-    {
-        /*
-         * CCSBAR
-        */
-        (VIRT_ADDR) CCSBAR,
-        (PHYS_ADDR) CCSBAR,
-        0x00100000,
-        VM_STATE_MASK_VALID | VM_STATE_MASK_WRITABLE | VM_STATE_MASK_CACHEABLE |
-        VM_STATE_MASK_MEM_COHERENCY | VM_STATE_MASK_GUARDED,
-        VM_STATE_VALID      | VM_STATE_WRITABLE      | VM_STATE_CACHEABLE_NOT |
-        VM_STATE_MEM_COHERENCY | VM_STATE_GUARDED
-    }
-
-#ifdef INCLUDE_LBC_SDRAM
-    ,
-    {
-        /* Must be sysPhysMemDesc [2] to allow adjustment in sysHwInit() */
-
-        (VIRT_ADDR) LOCAL_MEM_LOCAL_ADRS2,
-	(PHYS_ADDR) LOCAL_MEM_LOCAL_ADRS2,
-        LOCAL_MEM_SIZE2,
-        VM_STATE_MASK_VALID | VM_STATE_MASK_WRITABLE | VM_STATE_MASK_CACHEABLE | VM_STATE_MASK_MEM_COHERENCY ,
-        VM_STATE_VALID      | VM_STATE_WRITABLE      | TLB_CACHE_MODE | VM_STATE_MEM_COHERENCY
-    }
-#endif /* INCLUDE_LBC_SDRAM */
-
 #ifdef INCLUDE_L2_SRAM
     ,
     {
@@ -319,16 +307,7 @@ PHYS_MEM_DESC sysPhysMemDesc [] =
 #endif /* INCLUDE_RAPIDIO_BUS */
 
     ,
-    {
-        (VIRT_ADDR) FLASH_BASE_ADRS,
-        (PHYS_ADDR) FLASH_BASE_ADRS,
-        0x100000,
-        VM_STATE_MASK_VALID | VM_STATE_MASK_WRITABLE | VM_STATE_MASK_CACHEABLE | \
-        VM_STATE_MASK_GUARDED | VM_STATE_MASK_MEM_COHERENCY,
-        VM_STATE_VALID      | VM_STATE_WRITABLE      | VM_STATE_CACHEABLE_NOT | \
-        VM_STATE_GUARDED      | VM_STATE_MEM_COHERENCY
-    }
-    ,
+	#if 0
     {
         (VIRT_ADDR) FLASH1_BASE_ADRS,
         (PHYS_ADDR) FLASH1_BASE_ADRS,
@@ -338,7 +317,7 @@ PHYS_MEM_DESC sysPhysMemDesc [] =
         VM_STATE_VALID      | VM_STATE_WRITABLE      | VM_STATE_CACHEABLE_NOT | \
         VM_STATE_GUARDED      | VM_STATE_MEM_COHERENCY
     }
-
+	#endif
 
 };
 
@@ -789,14 +768,14 @@ void sysHwInit (void)
 #ifdef INCLUDE_BRANCH_PREDICTION
     vxEnableBP();
 #endif /* INCLUDE_BRANCH_PREDICTION */
-
+    
 #ifdef INCLUDE_RAPIDIO_BUS
 
     /* Errata not yet described - required for rapidIO TAS */
 
     *(UINT32*)(CCSBAR + 0x1010) = 0x01040004;
 #endif
-
+	d(0xfff00000,0x200,0x4);
     sysIvprSet(0x0);
 
     /* Disable L1 Icache */
@@ -812,7 +791,6 @@ void sysHwInit (void)
     /* Enable machine check pin */
 
     vxHid0Set(HID0_MCP|vxHid0Get());
-
 #ifdef E500_L1_PARITY_RECOVERY
 
     /* Enable Parity in L1 caches */
@@ -884,7 +862,7 @@ void sysHwInit (void)
 
 
     WRS_ASM("isync");
-
+    
 #ifdef INCLUDE_VXBUS
     hardWareInterFaceInit();
 #endif /* INCLUDE_VXBUS */
