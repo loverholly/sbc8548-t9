@@ -1,0 +1,6 @@
+#Mon Jul 25 13:55:59 CST 2016
+//PROJECT/SB8548M-s9_boot/class\ com.windriver.ide.core.build.model.WRUserDefinedPathEntryContainer\:staticanalysisMode=0
+//PROJECT/SB8548M-s9_boot/class\ com.windriver.ide.core.build.model.WRUserDefinedPathEntryContainer\:projectSetting=-I$(WIND_BASE)/target/h -I$(WIND_BASE)/target/config/comps/src -I$(WIND_BASE)/target/h/wrn/coreip -I$(WIND_BASE)/target/src/drv -I$(WIND_BASE)/target/src -I$(WIND_BASE)/target/config -DPRJ_BUILD -D_WRS_KERNEL
+//PROJECT/SB8548M-s9_boot/class\ com.windriver.ide.core.build.model.WRUserDefinedPathEntryContainer\:default=false
+eclipse.preferences.version=1
+//PROJECT/SB8548M-s9_boot/class\ com.windriver.ide.core.build.model.WRUserDefinedPathEntryContainer\:useProject=true
