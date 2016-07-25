@@ -79,8 +79,8 @@ const struct hcfResource tsecVxbEnd0Resources[] = {
     { "intr1Level",     HCF_RES_INT,    { (void *)EPIC_TSEC1RX_INT_VEC } },
     { "intr2",          HCF_RES_INT,    { (void *)EPIC_TSEC1ERR_INT_VEC } },
     { "intr2Level",     HCF_RES_INT,    { (void *)EPIC_TSEC1ERR_INT_VEC } },
-    { "phyAddr",	HCF_RES_INT,	{ (void *)1 } },
-    { "miiIfName",      HCF_RES_STRING, { (void *)XTSEC_NAME } },
+    { "phyAddr",	    HCF_RES_INT,	{ (void *)1 } },
+    { "miiIfName",      HCF_RES_STRING, { (void *)"tsecMdio" } },
     { "miiIfUnit",      HCF_RES_INT,    { (void *)0 } }
 };
 #define tsecVxbEnd0Num NELEMENTS(tsecVxbEnd0Resources)
@@ -93,8 +93,8 @@ const struct hcfResource tsecVxbEnd1Resources[] = {
     { "intr1Level",     HCF_RES_INT,    { (void *)EPIC_TSEC2RX_INT_VEC } },
     { "intr2",          HCF_RES_INT,    { (void *)EPIC_TSEC2ERR_INT_VEC } },
     { "intr2Level",     HCF_RES_INT,    { (void *)EPIC_TSEC2ERR_INT_VEC } },
-    { "phyAddr",	HCF_RES_INT,	{ (void *)2 } },
-    { "miiIfName",      HCF_RES_STRING, { (void *)XTSEC_NAME } },
+    { "phyAddr",	    HCF_RES_INT,	{ (void *)2} },
+    { "miiIfName",      HCF_RES_STRING, { (void *)"tsecMdio"} },
     { "miiIfUnit",      HCF_RES_INT,    { (void *)0 } }
 };
 #define tsecVxbEnd1Num NELEMENTS(tsecVxbEnd1Resources)
@@ -108,8 +108,8 @@ const struct hcfResource tsecVxbEnd2Resources[] = {
     { "intr1Level",     HCF_RES_INT,    { (void *)EPIC_TSEC3RX_INT_VEC } },
     { "intr2",          HCF_RES_INT,    { (void *)EPIC_TSEC3ERR_INT_VEC } },
     { "intr2Level",     HCF_RES_INT,    { (void *)EPIC_TSEC3ERR_INT_VEC } },
-    { "phyAddr",	HCF_RES_INT,	{ (void *)3 } },
-    { "miiIfName",      HCF_RES_STRING, { (void *)XTSEC_NAME } },
+    { "phyAddr",	    HCF_RES_INT,	{ (void *)3 } },
+    { "miiIfName",      HCF_RES_STRING, { (void *)"tsecMdio" } },
     { "miiIfUnit",      HCF_RES_INT,    { (void *)0 } },
 };
 #define tsecVxbEnd2Num NELEMENTS(tsecVxbEnd2Resources)
@@ -123,11 +123,24 @@ const struct hcfResource tsecVxbEnd3Resources[] = {
     { "intr2",          HCF_RES_INT,    { (void *)EPIC_TSEC4ERR_INT_VEC } },
     { "intr2Level",     HCF_RES_INT,    { (void *)EPIC_TSEC4ERR_INT_VEC } },
     { "phyAddr",	HCF_RES_INT,	{ (void *)4 } },
-    { "miiIfName",      HCF_RES_STRING, { (void *)XTSEC_NAME } },
+    { "miiIfName",      HCF_RES_STRING, { (void *)"tsecMdio" } },
     { "miiIfUnit",      HCF_RES_INT,    { (void *)0 } },
 };
 #define tsecVxbEnd3Num NELEMENTS(tsecVxbEnd3Resources)
 #endif /* INCLUDE_OPTIONAL_TSECS */
+
+#ifdef INCLUDE_TSEC_MDIO
+LOCAL const struct hcfResource mdio0Resources[] =
+{
+    { "regBase",   HCF_RES_INT,  {(void *)(CCSBAR + 0x24000) } },
+#ifdef INCLUDE_AMP
+    { "sharedMem", HCF_RES_INT,  {(void *)TM_ANCHOR_ADRS } }
+#endif /* INCLUDE_AMP */
+};
+#define mdio0Num NELEMENTS(mdio0Resources)
+#else
+#error our tsec network driver must use TSEC_MDIO
+#endif
 
 #ifdef INCLUDE_RAPIDIO_BUS
 const struct hcfResource m85xxRio0Resources[] = {
@@ -226,7 +239,7 @@ IMPORT UCHAR sysPci1AutoconfigIntrAssign(PCI_SYSTEM *, PCI_LOC *, UCHAR);
 IMPORT STATUS sysPci3AutoconfigInclude(PCI_SYSTEM *, PCI_LOC *, UINT);
 IMPORT UCHAR sysPci3AutoconfigIntrAssign(PCI_SYSTEM *, PCI_LOC *, UCHAR);
 
-const struct hcfResource m85xxPci0Resources[] = {
+pconst struct hcfResource m85xxPci0Resources[] = {
     { "regBase",        HCF_RES_INT,    { (void *)(CCSBAR + 0x8000) } },
     { "mem32Addr",      HCF_RES_ADDR,   { (void *)PCI_MEM_ADRS } },
     { "mem32Size",      HCF_RES_INT,    { (void *)PCI_MEM_SIZE } },
@@ -343,6 +356,12 @@ struct intrCtlrInputs epicInputs[] = {
     { EPIC_TSEC2TX_INT_VEC,  XTSEC_NAME, 1, 0 },
     { EPIC_TSEC2RX_INT_VEC,  XTSEC_NAME, 1, 1 },
     { EPIC_TSEC2ERR_INT_VEC, XTSEC_NAME, 1, 2 },
+    { EPIC_TSEC3TX_INT_VEC,  XTSEC_NAME, 2, 0 },
+    { EPIC_TSEC3RX_INT_VEC,  XTSEC_NAME, 2, 1 },
+    { EPIC_TSEC3ERR_INT_VEC, XTSEC_NAME, 2, 2 },
+    { EPIC_TSEC4TX_INT_VEC,  XTSEC_NAME, 3, 0 },
+    { EPIC_TSEC4RX_INT_VEC,  XTSEC_NAME, 3, 1 },
+    { EPIC_TSEC4ERR_INT_VEC, XTSEC_NAME, 3, 2 },
 };
 
 const struct hcfResource epic0Resources[] = {
@@ -375,7 +394,8 @@ const struct hcfDevice hcfDeviceList[] = {
 
     { "ns16550", 0, VXB_BUSID_PLB, 0, ns165500Num, ns165500Resources },
     { "ns16550", 1, VXB_BUSID_PLB, 0, ns165501Num, ns165501Resources },
-
+    { "tsecMdio", 0, VXB_BUSID_PLB, 0, mdio0Num, mdio0Resources }, /* tsecMdio设备，必须存在，tsec驱动依赖于该设备 */
+	
     { XTSEC_NAME, 0, VXB_BUSID_PLB, 0, tsecVxbEnd0Num, tsecVxbEnd0Resources },
     { XTSEC_NAME, 1, VXB_BUSID_PLB, 0, tsecVxbEnd1Num, tsecVxbEnd1Resources },
 #ifdef INCLUDE_OPTIONAL_TSECS
@@ -389,7 +409,6 @@ const struct hcfDevice hcfDeviceList[] = {
     { "m85xxCPU", 1, VXB_BUSID_RAPIDIO, 0, m85xxCPU1Num, m85xxCPU1Resources },
     { "smEnd", 0, VXB_BUSID_PLB,0, smEnd0Num, smEnd0Resources },
 #endif /* INCLUDE_RAPIDIO_BUS */
-
 #ifdef DRV_PCIBUS_M85XX
     { "m85xxPci", 0, VXB_BUSID_PLB, 0, m85xxPci0Num, m85xxPci0Resources },
     { "m85xxPci", 1, VXB_BUSID_PLB, 0, m85xxPci1Num, m85xxPci1Resources },
