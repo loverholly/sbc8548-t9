@@ -73,12 +73,14 @@ modification history
 
 const struct hcfResource tsecVxbEnd0Resources[] = {
     { "regBase",        HCF_RES_INT,    { (void *)(CCSBAR + 0x24000) } },
+#if 0
     { "intr0",          HCF_RES_INT,    { (void *)EPIC_TSEC1TX_INT_VEC } },
     { "intr0Level",     HCF_RES_INT,    { (void *)EPIC_TSEC1TX_INT_VEC } },
     { "intr1",          HCF_RES_INT,    { (void *)EPIC_TSEC1RX_INT_VEC } },
     { "intr1Level",     HCF_RES_INT,    { (void *)EPIC_TSEC1RX_INT_VEC } },
     { "intr2",          HCF_RES_INT,    { (void *)EPIC_TSEC1ERR_INT_VEC } },
     { "intr2Level",     HCF_RES_INT,    { (void *)EPIC_TSEC1ERR_INT_VEC } },
+#endif
     { "phyAddr",	    HCF_RES_INT,	{ (void *)1 } },
     { "miiIfName",      HCF_RES_STRING, { (void *)"tsecMdio" } },
     { "miiIfUnit",      HCF_RES_INT,    { (void *)0 } }
@@ -87,27 +89,30 @@ const struct hcfResource tsecVxbEnd0Resources[] = {
 
 const struct hcfResource tsecVxbEnd1Resources[] = {
     { "regBase",        HCF_RES_INT,    { (void *)(CCSBAR + 0x25000) } },
+#if 0
     { "intr0",          HCF_RES_INT,    { (void *)EPIC_TSEC2TX_INT_VEC } },
     { "intr0Level",     HCF_RES_INT,    { (void *)EPIC_TSEC2TX_INT_VEC } },
     { "intr1",          HCF_RES_INT,    { (void *)EPIC_TSEC2RX_INT_VEC } },
     { "intr1Level",     HCF_RES_INT,    { (void *)EPIC_TSEC2RX_INT_VEC } },
     { "intr2",          HCF_RES_INT,    { (void *)EPIC_TSEC2ERR_INT_VEC } },
     { "intr2Level",     HCF_RES_INT,    { (void *)EPIC_TSEC2ERR_INT_VEC } },
+#endif
     { "phyAddr",	    HCF_RES_INT,	{ (void *)2} },
     { "miiIfName",      HCF_RES_STRING, { (void *)"tsecMdio"} },
     { "miiIfUnit",      HCF_RES_INT,    { (void *)0 } }
 };
 #define tsecVxbEnd1Num NELEMENTS(tsecVxbEnd1Resources)
 
-#ifdef INCLUDE_OPTIONAL_TSECS
 const struct hcfResource tsecVxbEnd2Resources[] = {
     { "regBase",        HCF_RES_INT,    { (void *)(CCSBAR + 0x26000) } },
+#if 0
     { "intr0",          HCF_RES_INT,    { (void *)EPIC_TSEC3TX_INT_VEC } },
     { "intr0Level",     HCF_RES_INT,    { (void *)EPIC_TSEC3TX_INT_VEC } },
     { "intr1",          HCF_RES_INT,    { (void *)EPIC_TSEC3RX_INT_VEC } },
     { "intr1Level",     HCF_RES_INT,    { (void *)EPIC_TSEC3RX_INT_VEC } },
     { "intr2",          HCF_RES_INT,    { (void *)EPIC_TSEC3ERR_INT_VEC } },
     { "intr2Level",     HCF_RES_INT,    { (void *)EPIC_TSEC3ERR_INT_VEC } },
+#endif
     { "phyAddr",	    HCF_RES_INT,	{ (void *)3 } },
     { "miiIfName",      HCF_RES_STRING, { (void *)"tsecMdio" } },
     { "miiIfUnit",      HCF_RES_INT,    { (void *)0 } },
@@ -116,18 +121,19 @@ const struct hcfResource tsecVxbEnd2Resources[] = {
 
 const struct hcfResource tsecVxbEnd3Resources[] = {
     { "regBase",        HCF_RES_INT,    { (void *)(CCSBAR + 0x27000) } },
+#if 0	
     { "intr0",          HCF_RES_INT,    { (void *)EPIC_TSEC4TX_INT_VEC } },
     { "intr0Level",     HCF_RES_INT,    { (void *)EPIC_TSEC4TX_INT_VEC } },
     { "intr1",          HCF_RES_INT,    { (void *)EPIC_TSEC4RX_INT_VEC } },
     { "intr1Level",     HCF_RES_INT,    { (void *)EPIC_TSEC4RX_INT_VEC } },
     { "intr2",          HCF_RES_INT,    { (void *)EPIC_TSEC4ERR_INT_VEC } },
     { "intr2Level",     HCF_RES_INT,    { (void *)EPIC_TSEC4ERR_INT_VEC } },
+#endif
     { "phyAddr",	    HCF_RES_INT,	{ (void *)4 } },
     { "miiIfName",      HCF_RES_STRING, { (void *)"tsecMdio" } },
     { "miiIfUnit",      HCF_RES_INT,    { (void *)0 } },
 };
 #define tsecVxbEnd3Num NELEMENTS(tsecVxbEnd3Resources)
-#endif /* INCLUDE_OPTIONAL_TSECS */
 
 #ifdef INCLUDE_TSEC_MDIO
 LOCAL const struct hcfResource mdio0Resources[] =
@@ -140,7 +146,27 @@ LOCAL const struct hcfResource mdio0Resources[] =
 #define mdio0Num NELEMENTS(mdio0Resources)
 #else
 #error our tsec network driver must use TSEC_MDIO
-#endif
+#endif 
+
+const struct hcfResource mv88e1x11fixup0[] = {
+	{ "phyAddr",            HCF_RES_INT, { (void *)1 } },
+	{ "nonGenericBspMod",   HCF_RES_INT, { (void *)1 } },
+};
+
+const struct hcfResource mv88e1x11fixup1[] = {
+	{ "phyAddr",            HCF_RES_INT, { (void *)2 } },
+	{ "nonGenericBspMod",   HCF_RES_INT, { (void *)1 } },
+};
+
+const struct hcfResource mv88e1x11fixup2[] = {
+	{ "phyAddr",            HCF_RES_INT, { (void *)3 } },
+	{ "nonGenericBspMod",   HCF_RES_INT, { (void *)1 } },
+};
+
+const struct hcfResource mv88e1x11fixup3[] = {
+	{ "phyAddr",            HCF_RES_INT, { (void *)4 } },
+	{ "nonGenericBspMod",   HCF_RES_INT, { (void *)1 } },
+};
 
 #ifdef INCLUDE_RAPIDIO_BUS
 const struct hcfResource m85xxRio0Resources[] = {
@@ -149,7 +175,7 @@ const struct hcfResource m85xxRio0Resources[] = {
     { "deviceSize", HCF_RES_INT, {(void *)(RAPIDIO_SIZE - 0x0000000)}},
     { "rioBusAdrs", HCF_RES_INT, {(void *)RAPIDIO_BUS_ADRS }},
     { "rioBusSize", HCF_RES_INT, {(void *)RAPIDIO_BUS_SIZE }},
-    { "tgtIf", HCF_RES_INT, {(void *)LAWAR_TGTIF_RAPIDIO }},
+    { "tgtIf",      HCF_RES_INT, {(void *)LAWAR_TGTIF_RAPIDIO }},
     { "localMemAdrs",HCF_RES_INT, {(void *)LOCAL_MEM_LOCAL_ADRS}}
 };
 #define m85xxRio0Num    NELEMENTS(m85xxRio0Resources)
@@ -398,10 +424,18 @@ const struct hcfDevice hcfDeviceList[] = {
     { "tsecMdio", 0, VXB_BUSID_PLB, 0, mdio0Num, mdio0Resources }, /* tsecMdio设备，必须存在，tsec驱动依赖于该设备 */
 #endif/* INCLUDE_TSEC_MDIO */
     { XTSEC_NAME, 0, VXB_BUSID_PLB, 0, tsecVxbEnd0Num, tsecVxbEnd0Resources },
+		/* 在vxworks中添加多余的网口 */
+#ifdef PRJ_BUILD
     { XTSEC_NAME, 1, VXB_BUSID_PLB, 0, tsecVxbEnd1Num, tsecVxbEnd1Resources },
-#ifdef INCLUDE_OPTIONAL_TSECS
     { XTSEC_NAME, 2, VXB_BUSID_PLB, 0, tsecVxbEnd2Num, tsecVxbEnd2Resources },
     { XTSEC_NAME, 3, VXB_BUSID_PLB, 0, tsecVxbEnd3Num, tsecVxbEnd3Resources },
+#endif	/* PRJ_BUILD */
+
+#ifdef INCLUDE_MV88E1X11PHY
+    { "mv88E14xPhy", 0,  VXB_BUSID_PLB,  0,  NELEMENTS(mv88e1x11fixup0),  mv88e1x11fixup0},
+    { "mv88E14xPhy", 1,  VXB_BUSID_PLB,  0,  NELEMENTS(mv88e1x11fixup1),  mv88e1x11fixup1},
+    { "mv88E14xPhy", 2,  VXB_BUSID_PLB,  0,  NELEMENTS(mv88e1x11fixup2),  mv88e1x11fixup2},
+    { "mv88E14xPhy", 3,  VXB_BUSID_PLB,  0,  NELEMENTS(mv88e1x11fixup3),  mv88e1x11fixup3},
 #endif
 
 #ifdef INCLUDE_RAPIDIO_BUS

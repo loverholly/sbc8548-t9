@@ -723,10 +723,6 @@ IMPORT char* rioHostAdrs;
 #define USER_RESERVED_MEM 0x000000
 
 
-#ifndef MAX_MAC_DEVS
-#   define MAX_MAC_DEVS     1
-#endif
-
 #if defined(INCLUDE_END) || defined(INCLUDE_END2)
 
 #   define ETHERNET_MAC_HANDLER
