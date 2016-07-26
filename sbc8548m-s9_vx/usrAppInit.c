@@ -36,7 +36,7 @@ void usrAppInit (void)
 #endif
 
     /* add application specific code here */
-	ifconfig("motetsec0 192.102.10.15 up");
+	/* ifconfig("motetsec0 192.102.10.15 up"); */
     }
 
 
