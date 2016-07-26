@@ -122,7 +122,7 @@ const struct hcfResource tsecVxbEnd3Resources[] = {
     { "intr1Level",     HCF_RES_INT,    { (void *)EPIC_TSEC4RX_INT_VEC } },
     { "intr2",          HCF_RES_INT,    { (void *)EPIC_TSEC4ERR_INT_VEC } },
     { "intr2Level",     HCF_RES_INT,    { (void *)EPIC_TSEC4ERR_INT_VEC } },
-    { "phyAddr",	HCF_RES_INT,	{ (void *)4 } },
+    { "phyAddr",	    HCF_RES_INT,	{ (void *)4 } },
     { "miiIfName",      HCF_RES_STRING, { (void *)"tsecMdio" } },
     { "miiIfUnit",      HCF_RES_INT,    { (void *)0 } },
 };

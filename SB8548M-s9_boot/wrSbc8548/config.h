@@ -169,6 +169,7 @@ modification history
 #define INCLUDE_ETSEC_VXB_END
 #undef  INCLUDE_TSEC_VXB_END
 #define INCLUDE_MII_BUS
+#define INCLUDE_TSEC_MDIO
 #define INCLUDE_GENERICPHY
 #define HWMEM_POOL_SIZE 50000
 #define DRV_SIO_NS16550
