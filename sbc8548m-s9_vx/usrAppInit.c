@@ -20,9 +20,32 @@ Initialize user application code.
 */ 
 
 #include <vxWorks.h>
+#include "config.h"
 #if defined(PRJ_BUILD)
 #include "prjParams.h"
 #endif /* defined PRJ_BUILD */
+#define MOTETSEC_NAME(i)    "motetsec"#i
+void testMacro(unsigned int i)
+{
+	printf("%s\r\n", MOTETSEC_NAME(i));
+
+	return;
+}
+
+void usrNetDrvInit(void)
+{
+	int i = 0;
+	char netcfg[80];
+	
+	for (i = 0; i < 3; i++)
+	{
+		ipcom_drv_eth_init("motetsec",i+1,0);
+		sprintf(netcfg, "motetsec%d up", i+1);
+		ifconfig(netcfg);
+	}
+
+}
+
 
 /******************************************************************************
 *
@@ -36,7 +59,7 @@ void usrAppInit (void)
 #endif
 
     /* add application specific code here */
-	/* ifconfig("motetsec0 192.102.10.15 up"); */
+	usrNetDrvInit();
     }
 
 
