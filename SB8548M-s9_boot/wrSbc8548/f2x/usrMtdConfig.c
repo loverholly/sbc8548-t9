@@ -197,7 +197,7 @@ STATUS sysTffsFormat (int tffsNo)
     tffsDevFormatParams params = 
         {
             {0x000000l, 99, 1,  0x10000l, sysTffsProgressCb, {0,0,0,0}, NULL, 2, 0, NULL}, 
-            FTL_FORMAT_IF_NEEDED
+            FTL_FORMAT
         } ;
 
     if(tffsNo > noOfDrives)

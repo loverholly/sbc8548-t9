@@ -394,8 +394,9 @@ const struct hcfDevice hcfDeviceList[] = {
 
     { "ns16550", 0, VXB_BUSID_PLB, 0, ns165500Num, ns165500Resources },
     { "ns16550", 1, VXB_BUSID_PLB, 0, ns165501Num, ns165501Resources },
+#ifdef INCLUDE_TSEC_MDIO
     { "tsecMdio", 0, VXB_BUSID_PLB, 0, mdio0Num, mdio0Resources }, /* tsecMdio设备，必须存在，tsec驱动依赖于该设备 */
-	
+#endif/* INCLUDE_TSEC_MDIO */
     { XTSEC_NAME, 0, VXB_BUSID_PLB, 0, tsecVxbEnd0Num, tsecVxbEnd0Resources },
     { XTSEC_NAME, 1, VXB_BUSID_PLB, 0, tsecVxbEnd1Num, tsecVxbEnd1Resources },
 #ifdef INCLUDE_OPTIONAL_TSECS

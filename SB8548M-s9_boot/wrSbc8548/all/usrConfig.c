@@ -1521,7 +1521,7 @@ void usrRoot
 #endif /* INCLUDE_EDR_ERRLOG */
 
 #ifdef INCLUDE_EDR_SYSDBG_FLAG
-    edrSystemDebugModeInit ();	/* 这个函数有调用 */
+    edrSystemDebugModeInit ();	/* ?a??oˉêyóDμ÷ó? */
 #endif /* INCLUDE_EDR_SYSDBG_FLAG */
 
 
@@ -1542,7 +1542,7 @@ void usrRoot
 
 #if    defined(INCLUDE_MMU_BASIC)
 #ifdef	INCLUDE_PROTECT_TEXT
-    usrTextProtect ();/* 未定义 */
+    usrTextProtect ();/* ?′?¨ò? */
 #endif	/* INCLUDE_PROTECT_TEXT */
 
     /*
@@ -2324,6 +2324,8 @@ void usrRoot
 #if  defined(INCLUDE_NETWORK) || defined(INCLUDE_COMMON_NET)
 #ifdef  INCLUDE_NET_INIT
 #ifdef	INCLUDE_BOOT_LINE_INIT
+    
+    *(BOOT_LINE_ADRS) = EOS;/*每次都重新解析*/
     usrBootLineInit (sysStartType);	/* crack the bootline */
 #endif /* INCLUDE_BOOT_LINE_INIT */
 # if defined(INCLUDE_LOGGING) && defined(INCLUDE_LOG_STARTUP)

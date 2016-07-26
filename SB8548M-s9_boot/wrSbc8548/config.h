@@ -170,6 +170,9 @@ modification history
 #undef  INCLUDE_TSEC_VXB_END
 #define INCLUDE_MII_BUS
 #define INCLUDE_TSEC_MDIO
+#ifdef PRJ_BUILD
+#define INCLUDE_TSEC_MDIO
+#endif	/* PRJ_BUILD */
 #define INCLUDE_GENERICPHY
 #define HWMEM_POOL_SIZE 50000
 #define DRV_SIO_NS16550
