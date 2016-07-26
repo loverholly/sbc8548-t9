@@ -24,13 +24,16 @@ Initialize user application code.
 #if defined(PRJ_BUILD)
 #include "prjParams.h"
 #endif /* defined PRJ_BUILD */
-#define MOTETSEC_NAME(i)    "motetsec"#i
-void testMacro(unsigned int i)
-{
-	printf("%s\r\n", MOTETSEC_NAME(i));
 
-	return;
+#ifdef	INCLUDE_TFFS_MOUNT
+void usrTffsMount(void)
+{
+        if(OK!=usrTffsConfig (1, 0, "/tffs1" ))
+            {
+                printf("挂载数据FLASH不成功.\r\n");
+            }
 }
+#endif	/* INCLUDE_TFFS_MOUNT */
 
 void usrNetDrvInit(void)
 {
@@ -46,6 +49,66 @@ void usrNetDrvInit(void)
 
 }
 
+#include <moduleLib.h>
+#include <loadLib.h>
+#include <symLib.h>
+#include <ioLib.h>
+STATUS appLoadFromFs(void)
+{
+    char        *objName = "/tffs0/AppRun.out";
+    int         fd = -1;
+    MODULE_ID   mod_id;
+   
+	if ((fd = open(objName, O_RDONLY, 0)) == ERROR) {
+		perror("no app file\r\n");
+		return ERROR;
+	}   
+	if ((mod_id = loadModule(fd, LOAD_ALL_SYMBOLS)) == NULL) {
+		close(fd);
+		perror("loadModule error");
+		return ERROR;
+	}
+    if(fd >= 0)
+    {
+        close(fd);
+    }
+    return OK;
+}
+
+int appTaskRun(char * taskEntryName, char * taskName, int taskPriority, int taskStackSize)
+{
+    char *pValue;
+    SYM_TYPE symType;
+    extern SYMTAB_ID sysSymTbl;
+        /* 查找入口函数 */
+    if (symFindByName(sysSymTbl, taskEntryName,
+                      &pValue, &symType) == ERROR) {
+    	printf("找不到入口函数[%s]\r\n",taskEntryName);
+        return -1;
+    }
+    if(0 > taskSpawn(taskName, taskPriority, VX_NO_STACK_FILL|VX_FP_TASK| VX_SPE_TASK, 
+                     taskStackSize, (FUNCPTR)pValue,   
+                     0, 0, 0, 0, 0, 0, 0, 0, 0, 0)){
+        printf("创建任务 %s 失败\n", taskName);
+        return -2;
+    }
+    return 0;
+}
+
+
+STATUS appRunInit()
+{
+	if(appLoadFromFs()!=OK)
+	{
+		printf("加载AppRun失败\n");
+		return ERROR;
+	}
+	if(OK!=appTaskRun("AppRun","AppRun",201,0x400000))
+	{
+		printf("AppRun运行失败\n");
+	}
+	
+}
 
 /******************************************************************************
 *
@@ -60,6 +123,12 @@ void usrAppInit (void)
 
     /* add application specific code here */
 	usrNetDrvInit();
+	
+	#ifdef	INCLUDE_TFFS_MOUNT
+	usrTffsMount();
+	#endif
+
+	appRunInit();
     }
 
 
