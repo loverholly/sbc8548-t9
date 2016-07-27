@@ -2007,3 +2007,14 @@ unsigned int cpu_time_diff_us(unsigned int last)
 1000000);
     return (unsigned int)now;
 }
+
+unsigned int cpu_time_diff_ms(unsigned int last)
+{
+    unsigned long long now;
+    UINT32 tbh,tbl;
+    vxTimeBaseGet(&tbh,&tbl);
+    now = 8 * (unsigned long long)(tbl - last)/(sysClkFreqGet() / 
+1000000);
+    now = now/1000;
+    return (unsigned int)now;
+}

@@ -428,7 +428,7 @@ const struct hcfDevice hcfDeviceList[] = {
 #ifdef PRJ_BUILD
     { XTSEC_NAME, 1, VXB_BUSID_PLB, 0, tsecVxbEnd1Num, tsecVxbEnd1Resources },
     { XTSEC_NAME, 2, VXB_BUSID_PLB, 0, tsecVxbEnd2Num, tsecVxbEnd2Resources },
-    { XTSEC_NAME, 3, VXB_BUSID_PLB, 0, tsecVxbEnd3Num, tsecVxbEnd3Resources },
+    /* { XTSEC_NAME, 3, VXB_BUSID_PLB, 0, tsecVxbEnd3Num, tsecVxbEnd3Resources }, */
 #endif	/* PRJ_BUILD */
 
 #ifdef INCLUDE_MV88E1X11PHY

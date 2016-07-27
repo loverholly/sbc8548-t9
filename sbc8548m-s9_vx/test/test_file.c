@@ -24,8 +24,8 @@ void test_file_cost(char *filename, unsigned int filesize)
 	fd = open(filename, 0x202,0x777);
 	write(fd, 0x4300,filesize);
 	close(fd);
-	tbh = cpu_time_diff_us(tbl);
-	printf("this file write cost %d us\r\n", filesize);
+	tbh = cpu_time_diff_ms(tbl);
+	printf("this file write cost %d ms\r\n", tbh);
 
 	return;
 }
