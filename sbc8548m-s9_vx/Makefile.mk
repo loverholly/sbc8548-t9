@@ -2,7 +2,7 @@
 #
 
 
-# GENERATED: Tue Jul 26 16:00:41 +0800 2016
+# GENERATED: Wed Jul 27 08:41:14 +0800 2016
 # DO NOT EDIT - file is regenerated whenever the project changes
 
 
@@ -16,7 +16,7 @@ endif
 PRJ_FILE       = sbc8548m-s9_vx.wpj
 PRJ_FULL_PATH  = $(WIND_HOME)/sbc8548-t9/sbc8548m-s9_vx
 PRJ_TYPE       = vxWorks
-PRJ_OBJS       = sysALib.o sysLib.o usrAppInit.o usrRtpAppInit.o prjConfig.o linkSyms.o
+PRJ_OBJS       = sysALib.o sysLib.o usrAppInit.o usrRtpAppInit.o prjConfig.o linkSyms.o test_file.o
 PRJ_MAKEFILE   = $(PRJ_DIR)/Makefile.mk
 BOOT_OBJS      = romInit.o romStart.o $(BOOT_EXTRA)
 BUILD_SPEC     = default
@@ -592,6 +592,10 @@ usrAppInit.o:  $(PRJ_DIR)/usrAppInit.c
 usrRtpAppInit.o:  $(PRJ_DIR)/usrRtpAppInit.c 
 	$(RM) usrRtpAppInit.o
 	$(CC) $(CFLAGS) $(CFLAGS_OPTIONS_ALL) -c $(PRJ_DIR)/usrRtpAppInit.c
+
+test_file.o:  $(PRJ_DIR)/test/test_file.c 
+	$(RM) test_file.o
+	$(CC) $(CFLAGS) $(CFLAGS_OPTIONS_ALL) -c $(PRJ_DIR)/test/test_file.c
 endif
 
 ifeq ($(BUILD_SPEC),default_rom)
@@ -603,6 +607,10 @@ usrAppInit.o:  $(PRJ_DIR)/usrAppInit.c
 usrRtpAppInit.o:  $(PRJ_DIR)/usrRtpAppInit.c 
 	$(RM) usrRtpAppInit.o
 	$(CC) $(CFLAGS) $(CFLAGS_OPTIONS_ALL) -c $(PRJ_DIR)/usrRtpAppInit.c
+
+test_file.o:  $(PRJ_DIR)/test/test_file.c 
+	$(RM) test_file.o
+	$(CC) $(CFLAGS) $(CFLAGS_OPTIONS_ALL) -c $(PRJ_DIR)/test/test_file.c
 endif
 
 ifeq ($(BUILD_SPEC),default_romCompress)
@@ -614,6 +622,10 @@ usrAppInit.o:  $(PRJ_DIR)/usrAppInit.c
 usrRtpAppInit.o:  $(PRJ_DIR)/usrRtpAppInit.c 
 	$(RM) usrRtpAppInit.o
 	$(CC) $(CFLAGS) $(CFLAGS_OPTIONS_ALL) -c $(PRJ_DIR)/usrRtpAppInit.c
+
+test_file.o:  $(PRJ_DIR)/test/test_file.c 
+	$(RM) test_file.o
+	$(CC) $(CFLAGS) $(CFLAGS_OPTIONS_ALL) -c $(PRJ_DIR)/test/test_file.c
 endif
 
 ifeq ($(BUILD_SPEC),default_romResident)
@@ -625,6 +637,10 @@ usrAppInit.o:  $(PRJ_DIR)/usrAppInit.c
 usrRtpAppInit.o:  $(PRJ_DIR)/usrRtpAppInit.c 
 	$(RM) usrRtpAppInit.o
 	$(CC) $(CFLAGS) $(CFLAGS_OPTIONS_ALL) -c $(PRJ_DIR)/usrRtpAppInit.c
+
+test_file.o:  $(PRJ_DIR)/test/test_file.c 
+	$(RM) test_file.o
+	$(CC) $(CFLAGS) $(CFLAGS_OPTIONS_ALL) -c $(PRJ_DIR)/test/test_file.c
 endif
 
 

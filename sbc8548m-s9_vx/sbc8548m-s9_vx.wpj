@@ -1412,6 +1412,14 @@ prjConfig.o
 C/C++ compiler
 <END>
 
+<BEGIN> FILE_$(PRJ_DIR)/test/test_file.c_objects
+test_file.o
+<END>
+
+<BEGIN> FILE_$(PRJ_DIR)/test/test_file.c_tool
+C/C++ compiler
+<END>
+
 <BEGIN> FILE_$(PRJ_DIR)/usrAppInit.c_objects
 usrAppInit.o
 <END>
@@ -1460,7 +1468,8 @@ $(BSP_DIR)/sysALib.s \
 	$(PRJ_DIR)/usrAppInit.c \
 	$(PRJ_DIR)/usrRtpAppInit.c \
 	$(PRJ_DIR)/prjConfig.c \
-	$(PRJ_DIR)/linkSyms.c
+	$(PRJ_DIR)/linkSyms.c \
+	$(PRJ_DIR)/test/test_file.c
 <END>
 
 <BEGIN> VSB_DIR
