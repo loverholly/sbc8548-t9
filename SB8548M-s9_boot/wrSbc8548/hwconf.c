@@ -373,6 +373,19 @@ const struct hcfResource ppcIntCtlr0Resources[] = {
 };
 #define ppcIntCtlr0Num NELEMENTS(ppcIntCtlr0Resources)
 
+/* 单个中断的极性，触发类型定义 */
+#ifdef PRJ_BUILD
+struct intrCtlrTrigger epicIntCtlrTrigger[]=
+{
+	{EPIC_VEC_EXT_IRQ0+0,VXB_INTR_TRIG_EDGE|VXB_INTR_TRIG_NEG},
+	{EPIC_VEC_EXT_IRQ0+1,VXB_INTR_TRIG_EDGE|VXB_INTR_TRIG_NEG},
+	{EPIC_VEC_EXT_IRQ0+2,VXB_INTR_TRIG_EDGE|VXB_INTR_TRIG_NEG},
+	{EPIC_VEC_EXT_IRQ0+3,VXB_INTR_TRIG_EDGE|VXB_INTR_TRIG_NEG},
+	{EPIC_VEC_EXT_IRQ0+4,VXB_INTR_TRIG_EDGE|VXB_INTR_TRIG_NEG},
+	{EPIC_VEC_EXT_IRQ0+5,VXB_INTR_TRIG_EDGE|VXB_INTR_TRIG_NEG},
+};
+#endif	/* PRJ_BUILD */
+
 struct intrCtlrInputs epicInputs[] = {
     { EPIC_DUART_INT_VEC,    "ns16550", 0, 0 },
     { EPIC_DUART_INT_VEC,    "ns16550", 1, 0 },
@@ -388,6 +401,14 @@ struct intrCtlrInputs epicInputs[] = {
     { EPIC_TSEC4TX_INT_VEC,  XTSEC_NAME, 3, 0 },
     { EPIC_TSEC4RX_INT_VEC,  XTSEC_NAME, 3, 1 },
     { EPIC_TSEC4ERR_INT_VEC, XTSEC_NAME, 3, 2 },
+#ifdef PRJ_BUILD				/* 添加外部中断的定义 */
+    {EPIC_VEC_EXT_IRQ0+0,     "irq0",0,0},
+    {EPIC_VEC_EXT_IRQ0+1,     "irq1",0,0},
+    {EPIC_VEC_EXT_IRQ0+2,     "irq2",0,0},
+    {EPIC_VEC_EXT_IRQ0+3,     "irq3",0,0},
+    {EPIC_VEC_EXT_IRQ0+4,     "irq4",0,0},
+    {EPIC_VEC_EXT_IRQ0+5,     "irq5",0,0},
+#endif
 };
 
 const struct hcfResource epic0Resources[] = {
@@ -395,6 +416,19 @@ const struct hcfResource epic0Resources[] = {
     { "input",          HCF_RES_ADDR, { (void *)&epicInputs[0] } },
     { "inputTableSize", HCF_RES_INT,  { (void *)NELEMENTS(epicInputs) } },
     { "numCpus",        HCF_RES_INT,  { (void *)1 } },
+#ifdef PRJ_BUILD
+    { "trigger",            HCF_RES_ADDR,   { (void *)&epicIntCtlrTrigger[0] } },
+    { "triggerTableSize",	HCF_RES_INT,	{ (void *)NELEMENTS(epicIntCtlrTrigger) }},
+	    { "exPolar",        HCF_RES_INT,  { (void *)EPIC_INT_ACT_LOW } }, /* 外部中断的默认极性，如果不定义，默认为高 */
+    { "exSense",            HCF_RES_INT,    { (void *)EPIC_SENSE_LVL } }, /* 外部中断的默认触发类型，如果不定义，默认为电平触发 */
+    { "inPolar",        HCF_RES_INT,  { (void *)EPIC_INT_ACT_HIGH } }, /* 外部中断的默认极性，如果不定义，默认为高 */
+    { "inSense",            HCF_RES_INT,    { (void *)EPIC_SENSE_LVL } }, /* 外部中断的默认触发类型，如果不定义，默认为电平触发 */
+    { "crtEnable",            HCF_RES_INT,    { (void *)FALSE } }, /* 是否使能critical interrupt，不定为默认关闭 */
+        /** todo exIntWkrd是做什么的? */
+    { "exIntWkrd",            HCF_RES_INT,    { (void *)FALSE } }, /* IRQ workaround should be used (default FALSE).不知道什么作用 */
+    { "numInts",            HCF_RES_INT,    { (void *)255 } }, /* 中断表的个数，不定义为默认255 */
+#endif	/* PRJ_BUILD */
+
 #ifdef DRV_PCIBUS_M85XX
     { "exPolar",        HCF_RES_INT,  { (void *)EPIC_INT_ACT_LOW } },
 #endif
