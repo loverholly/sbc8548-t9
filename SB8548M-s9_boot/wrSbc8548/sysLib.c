@@ -94,6 +94,12 @@ TLB_ENTRY_DESC sysStaticTlbDesc [] =
     { CCSBAR, 0x0, CCSBAR, _MMU_TLB_TS_1 | _MMU_TLB_SZ_1M |
         _MMU_TLB_ATTR_I | _MMU_TLB_ATTR_G | _MMU_TLB_PERM_W
     }
+	,
+	
+    {
+      UART_BASE_ADRS, 0x0, UART_BASE_ADRS, _MMU_TLB_TS_0 | _MMU_TLB_SZ_1M |
+      _MMU_TLB_ATTR_I | _MMU_TLB_ATTR_G | _MMU_TLB_PERM_W | _MMU_TLB_IPROT
+    }
 
 #ifdef INCLUDE_L2_SRAM
     ,
@@ -851,15 +857,13 @@ void sysHwInit (void)
     /* Machine check via RXFE for RIO */
 
     vxHid1Set(vxHid1Get()| HID1_ASTME | HID1_RXFE); /* Address Stream Enable */
-
+#ifdef PRJ_BUILD
     /* enable the flash window */
-#if 0
-    *M85XX_LAWBAR3(CCSBAR) = FLASH1_BASE_ADRS >> LAWBAR_ADRS_SHIFT;
-    *M85XX_LAWAR3(CCSBAR)  = LAWAR_ENABLE | LAWAR_TGTIF_LBC | LAWAR_SIZE_64MB;
-#endif	
-    /* *M85XX_BR1(CCSBAR)   = FLASH1_BASE_ADRS | 0X1001; */
-	/* *M85XX_OR1(CCSBAR)   = FLASH1_ADRS_MASK | 0xcf0; */
-
+    *M85XX_LAWBAR3(CCSBAR) = LBC_CS5_LOCAL_ADRS >> LAWBAR_ADRS_SHIFT;
+    *M85XX_LAWAR3(CCSBAR)  = LAWAR_ENABLE | LAWAR_TGTIF_LBC | LAWAR_SIZE_128MB;
+    *M85XX_BR5(CCSBAR)   = LBC_CS5_LOCAL_ADRS | 0x0801;
+	*M85XX_OR5(CCSBAR)   = LBC_CS5_LOCAL_SIZE_MASK | 0xcf0;
+#endif	/* PRJ_BUILD */
 
     WRS_ASM("isync");
     

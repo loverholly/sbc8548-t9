@@ -598,7 +598,6 @@ IMPORT char* rioHostAdrs;
 #define LBC_SDRAM_LOCAL_SIZE       LOCAL_MEM_SIZE2
 
 /* LBC CS3 - nvram, cadmus, ATM phy */
-
 #define INCLUDE_LBC_CS3
 
 #ifdef INCLUDE_LBC_CS3
@@ -606,8 +605,15 @@ IMPORT char* rioHostAdrs;
 #define LBC_CS3_LOCAL_SIZE_MASK  0xfff00000
 #define LBC_CS3_SIZE             0x0100000
 #endif
-
-
+			/* LBC CS5,使用MMU表项0的配置 */
+#define INCLUDE_LBC_CS5		
+#ifdef INCLUDE_LBC_CS5		
+#define LBC_CS5_LOCAL_ADRS       0xb0000000
+#define LBC_CS5_LOCAL_SIZE_MASK  0xfe000000
+#define LBC_CS5_LOCAL_SIEZ       0x02000000
+#define UART_BASE_ADRS           LBC_CS5_LOCAL_ADRS		
+#endif
+		
 #define INCLUDE_FLASH
 
 #ifdef INCLUDE_FLASH

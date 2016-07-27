@@ -8,15 +8,15 @@
  */
 
 /*
-modification history
---------------------
-01b,16mar06,jmt  Add header file to find USER_APPL_INIT define
-01a,02jun98,ms   written
+  modification history
+  --------------------
+  01b,16mar06,jmt  Add header file to find USER_APPL_INIT define
+  01a,02jun98,ms   written
 */
 
 /*
-DESCRIPTION
-Initialize user application code.
+  DESCRIPTION
+  Initialize user application code.
 */ 
 
 #include <vxWorks.h>
@@ -28,10 +28,10 @@ Initialize user application code.
 #ifdef	INCLUDE_TFFS_MOUNT
 void usrTffsMount(void)
 {
-        if(OK!=usrTffsConfig (1, 0, "/tffs1" ))
-            {
-                printf("挂载数据FLASH不成功.\r\n");
-            }
+	if(OK!=usrTffsConfig (1, 0, "/tffs1" ))
+	{
+		printf("挂载数据FLASH不成功.\r\n");
+	}
 }
 #endif	/* INCLUDE_TFFS_MOUNT */
 
@@ -110,25 +110,43 @@ STATUS appRunInit()
 	
 }
 
+void usrNs16550Init(void)
+{
+		/* LBC CS4 - UART - 1MB, 8-bit, modifyed by lih, 20140827 */
+    sysSerialChanConnect(2);
+    ttyDrv();
+    ttyDevCreate ("/Rs232/0", sysSerialChanGet(2), 1024, 1024);
+
+    sysSerialChanConnect(3);
+    ttyDrv();
+    ttyDevCreate ("/Rs232/1", sysSerialChanGet(3), 1024, 1024);
+
+    sysSerialChanConnect(4);
+    ttyDrv();
+    ttyDevCreate ("/Rs232/2", sysSerialChanGet(4), 1024, 1024);
+}
+
 /******************************************************************************
-*
-* usrAppInit - initialize the users application
-*/ 
+ *
+ * usrAppInit - initialize the users application
+ */ 
 
 void usrAppInit (void)
-    {
+{
 #ifdef	USER_APPL_INIT
 	USER_APPL_INIT;		/* for backwards compatibility */
 #endif
 
-    /* add application specific code here */
+		/* add application specific code here */
 	usrNetDrvInit();
 	
-	#ifdef	INCLUDE_TFFS_MOUNT
+#ifdef	INCLUDE_TFFS_MOUNT
 	usrTffsMount();
-	#endif
-
+#endif
+		/* 用户自定义串口驱动 */
+	usrNs16550Init();
+	
 	appRunInit();
-    }
+}
 
 

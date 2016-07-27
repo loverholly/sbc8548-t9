@@ -362,9 +362,13 @@ const struct hcfResource ns165501Resources[] = {
 #ifdef PRJ_BUILD
 /* 定义串口寄存器以及串口参考时钟 */
 #define SERIAL0_BASE_ADRS (UART_BASE_ADRS + 0x00)
-#define SERIAL1_BASE_ADRS (UART_BASE_ADRS + 0x08)
-#define SERIAL2_BASE_ADRS (UART_BASE_ADRS + 0x10)
-#define UART_FREQ (14745600)
+#define SERIAL1_BASE_ADRS (UART_BASE_ADRS + 0x10)
+#define SERIAL2_BASE_ADRS (UART_BASE_ADRS + 0x20)
+/* #define UART_FREQ (14745600) */
+#define UART_FREQ (24000000)
+#define UART_IRQ  (EPIC_VEC_EXT_IRQ0 + 5)
+#define DUART_REG_ADDR_INTERVAL 1                     /* duart vector register distance */
+
 
 static unsigned int rs422Division(unsigned int xtal, unsigned int baud)
 {
@@ -373,9 +377,9 @@ static unsigned int rs422Division(unsigned int xtal, unsigned int baud)
 
 const struct hcfResource serial0Resources[] = {
     { VXB_REG_BASE,  HCF_RES_INT,  {(void *)SERIAL0_BASE_ADRS} },
-    { "irq",         HCF_RES_INT,  {(void *)EPIC_IRQ3_VEC} },
+    { "irq",         HCF_RES_INT,  {(void *)UART_IRQ} },
     { "regInterval", HCF_RES_INT,  {(void *)DUART_REG_ADDR_INTERVAL} },
-    { "irqLevel",    HCF_RES_INT,  {(void *)EPIC_IRQ3_VEC} },
+    { "irqLevel",    HCF_RES_INT,  {(void *)UART_IRQ} },
     { "clkFreq",	 HCF_RES_INT,  {(void *)UART_FREQ} },
     { "divisorCalc", HCF_RES_ADDR, {(void *)rs422Division}}
 };
@@ -383,9 +387,9 @@ const struct hcfResource serial0Resources[] = {
 
 const struct hcfResource serial1Resources[] = {
     { VXB_REG_BASE,  HCF_RES_INT,  {(void *)SERIAL1_BASE_ADRS} },
-    { "irq",         HCF_RES_INT,  {(void *)EPIC_IRQ4_VEC} },
+    { "irq",         HCF_RES_INT,  {(void *)UART_IRQ} },
     { "regInterval", HCF_RES_INT,  {(void *)DUART_REG_ADDR_INTERVAL} },
-    { "irqLevel",    HCF_RES_INT,  {(void *)EPIC_IRQ4_VEC} },
+    { "irqLevel",    HCF_RES_INT,  {(void *)UART_IRQ} },
     { "clkFreq",	 HCF_RES_INT,  {(void *)UART_FREQ} },
     { "divisorCalc", HCF_RES_ADDR, {(void *)rs422Division}}
 };
@@ -393,9 +397,9 @@ const struct hcfResource serial1Resources[] = {
 
 const struct hcfResource serial2Resources[] = {
     { VXB_REG_BASE,  HCF_RES_INT,  {(void *)SERIAL2_BASE_ADRS} },
-    { "irq",         HCF_RES_INT,  {(void *)EPIC_IRQ5_VEC} },
+    { "irq",         HCF_RES_INT,  {(void *)UART_IRQ} },
     { "regInterval", HCF_RES_INT,  {(void *)DUART_REG_ADDR_INTERVAL} },
-    { "irqLevel",    HCF_RES_INT,  {(void *)EPIC_IRQ5_VEC} },
+    { "irqLevel",    HCF_RES_INT,  {(void *)UART_IRQ} },
     { "clkFreq",	 HCF_RES_INT,  {(void *)UART_FREQ} },
     { "divisorCalc", HCF_RES_ADDR, {(void *)rs422Division}}
 };
@@ -505,6 +509,11 @@ const struct hcfDevice hcfDeviceList[] = {
 
     { "ns16550", 0, VXB_BUSID_PLB, 0, ns165500Num, ns165500Resources },
     { "ns16550", 1, VXB_BUSID_PLB, 0, ns165501Num, ns165501Resources },
+#ifdef PRJ_BUILD
+    { "ns16550", 2, VXB_BUSID_PLB, 0, serial0Num, serial0Resources},
+    { "ns16550", 3, VXB_BUSID_PLB, 0, serial1Num, serial1Resources},
+    { "ns16550", 4, VXB_BUSID_PLB, 0, serial2Num, serial2Resources},
+#endif	/* PRJ_BUILD */
 #ifdef INCLUDE_TSEC_MDIO
     { "tsecMdio", 0, VXB_BUSID_PLB, 0, mdio0Num, mdio0Resources }, /* tsecMdio设备，必须存在，tsec驱动依赖于该设备 */
 #endif/* INCLUDE_TSEC_MDIO */
