@@ -411,7 +411,8 @@ UINT32 ppcE500CACHE_ALIGN_SIZE = 32;
 
 #include "sysMotI2c.c"
 #include "sysMpc85xxI2c.c"
-
+/* 添加串口驱动部分的源码 */
+#include "vxbNs16550Sio.c"
 
 
 #ifdef INCLUDE_L1_IPARITY_HDLR

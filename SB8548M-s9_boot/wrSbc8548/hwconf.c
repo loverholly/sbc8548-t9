@@ -359,6 +359,49 @@ const struct hcfResource ns165501Resources[] = {
 };
 #define ns165501Num NELEMENTS(ns165501Resources)
 
+#ifdef PRJ_BUILD
+/* 定义串口寄存器以及串口参考时钟 */
+#define SERIAL0_BASE_ADRS (UART_BASE_ADRS + 0x00)
+#define SERIAL1_BASE_ADRS (UART_BASE_ADRS + 0x08)
+#define SERIAL2_BASE_ADRS (UART_BASE_ADRS + 0x10)
+#define UART_FREQ (14745600)
+
+static unsigned int rs422Division(unsigned int xtal, unsigned int baud)
+{
+    return (xtal / (16 * baud));
+}
+
+const struct hcfResource serial0Resources[] = {
+    { VXB_REG_BASE,  HCF_RES_INT,  {(void *)SERIAL0_BASE_ADRS} },
+    { "irq",         HCF_RES_INT,  {(void *)EPIC_IRQ3_VEC} },
+    { "regInterval", HCF_RES_INT,  {(void *)DUART_REG_ADDR_INTERVAL} },
+    { "irqLevel",    HCF_RES_INT,  {(void *)EPIC_IRQ3_VEC} },
+    { "clkFreq",	 HCF_RES_INT,  {(void *)UART_FREQ} },
+    { "divisorCalc", HCF_RES_ADDR, {(void *)rs422Division}}
+};
+#define serial0Num NELEMENTS(serial0Resources)
+
+const struct hcfResource serial1Resources[] = {
+    { VXB_REG_BASE,  HCF_RES_INT,  {(void *)SERIAL1_BASE_ADRS} },
+    { "irq",         HCF_RES_INT,  {(void *)EPIC_IRQ4_VEC} },
+    { "regInterval", HCF_RES_INT,  {(void *)DUART_REG_ADDR_INTERVAL} },
+    { "irqLevel",    HCF_RES_INT,  {(void *)EPIC_IRQ4_VEC} },
+    { "clkFreq",	 HCF_RES_INT,  {(void *)UART_FREQ} },
+    { "divisorCalc", HCF_RES_ADDR, {(void *)rs422Division}}
+};
+#define serial1Num NELEMENTS(serial1Resources)
+
+const struct hcfResource serial2Resources[] = {
+    { VXB_REG_BASE,  HCF_RES_INT,  {(void *)SERIAL2_BASE_ADRS} },
+    { "irq",         HCF_RES_INT,  {(void *)EPIC_IRQ5_VEC} },
+    { "regInterval", HCF_RES_INT,  {(void *)DUART_REG_ADDR_INTERVAL} },
+    { "irqLevel",    HCF_RES_INT,  {(void *)EPIC_IRQ5_VEC} },
+    { "clkFreq",	 HCF_RES_INT,  {(void *)UART_FREQ} },
+    { "divisorCalc", HCF_RES_ADDR, {(void *)rs422Division}}
+};
+#define serial2Num NELEMENTS(serial2Resources)
+#endif	/* PRJ_BUILD */
+
 const struct intrCtlrInputs ppcIntCtlrInputs[] = {
     { 0, "epic", 0, 0 },
     { 1, "m85xxTimerDev", 0, 0 },
@@ -375,6 +418,14 @@ const struct hcfResource ppcIntCtlr0Resources[] = {
 
 /* 单个中断的极性，触发类型定义 */
 #ifdef PRJ_BUILD
+/* 此处宏是定义中断极性触发的东西 */
+#ifndef VXB_INTR_TRIG_ACTIVE_LOW
+#define VXB_INTR_TRIG_FALLING_EDGE  (VXB_INTR_TRIG_NEG | VXB_INTR_TRIG_EDGE)
+#define VXB_INTR_TRIG_RISING_EDGE   (VXB_INTR_TRIG_POS | VXB_INTR_TRIG_EDGE)
+#define VXB_INTR_TRIG_ACTIVE_LOW    (VXB_INTR_TRIG_NEG | VXB_INTR_TRIG_LEVEL)
+#define VXB_INTR_TRIG_ACTIVE_HIGH   (VXB_INTR_TRIG_POS | VXB_INTR_TRIG_LEVEL)
+#endif
+
 struct intrCtlrTrigger epicIntCtlrTrigger[]=
 {
 	{EPIC_VEC_EXT_IRQ0+0,VXB_INTR_TRIG_EDGE|VXB_INTR_TRIG_NEG},
@@ -419,7 +470,7 @@ const struct hcfResource epic0Resources[] = {
 #ifdef PRJ_BUILD
     { "trigger",            HCF_RES_ADDR,   { (void *)&epicIntCtlrTrigger[0] } },
     { "triggerTableSize",	HCF_RES_INT,	{ (void *)NELEMENTS(epicIntCtlrTrigger) }},
-	    { "exPolar",        HCF_RES_INT,  { (void *)EPIC_INT_ACT_LOW } }, /* 外部中断的默认极性，如果不定义，默认为高 */
+	{ "exPolar",        HCF_RES_INT,  { (void *)EPIC_INT_ACT_LOW } }, /* 外部中断的默认极性，如果不定义，默认为高 */
     { "exSense",            HCF_RES_INT,    { (void *)EPIC_SENSE_LVL } }, /* 外部中断的默认触发类型，如果不定义，默认为电平触发 */
     { "inPolar",        HCF_RES_INT,  { (void *)EPIC_INT_ACT_HIGH } }, /* 外部中断的默认极性，如果不定义，默认为高 */
     { "inSense",            HCF_RES_INT,    { (void *)EPIC_SENSE_LVL } }, /* 外部中断的默认触发类型，如果不定义，默认为电平触发 */
