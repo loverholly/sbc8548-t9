@@ -1885,7 +1885,9 @@ LOCAL STATUS ns16550vxbOptsSet
 
     VXB_NS16550_SPIN_LOCK_ISR_TAKE(pChan);
 
-    pChan->mcr &= (~(MCR_RTS | MCR_DTR)); /* clear RTS and DTR bits */
+    /* clear RTS and DTR bits */
+
+    pChan->mcr = (UINT8) (pChan->mcr & ~(MCR_RTS | MCR_DTR));
 
     switch (options & CSIZE)
         {
@@ -1922,12 +1924,16 @@ LOCAL STATUS ns16550vxbOptsSet
         {
         /* !clocal enables hardware flow control(DTR/DSR) */
 
-        pChan->mcr |= (MCR_DTR | MCR_RTS);
-        pChan->ier &= (~TxFIFO_BIT);
-        pChan->ier |= IER_EMSI;    /* enable modem status interrupt */
-        }
+		pChan->mcr = (UINT8) (pChan->mcr | (MCR_DTR | MCR_RTS));
+		pChan->ier = (UINT8) (pChan->ier & (~TxFIFO_BIT));
+		pChan->ier |= IER_EMSI;    /* enable modem status interrupt */
+		}
     else
-        pChan->ier &= ~IER_EMSI; /* disable modem status interrupt */
+	{
+	/* disable modem status interrupt */
+
+	pChan->ier = (UINT8) (pChan->ier & ~IER_EMSI);
+	}
 
     REG_SET(LCR, pChan, pChan->lcr);
     REG_SET(MCR, pChan, pChan->mcr);
@@ -1971,7 +1977,9 @@ LOCAL STATUS ns16550vxbOptsSet
     zmd_16550_fix(pChan);
 
     if (options & CREAD)
-        pChan->ier |= RxFIFO_BIT;
+        pChan->ier = (UINT8)(pChan->ier | RxFIFO_BIT);
+    else
+        pChan->ier = (UINT8)(pChan->ier & (~RxFIFO_BIT));
 
     if (pChan->channelMode == SIO_MODE_INT)
         {
@@ -2006,7 +2014,7 @@ LOCAL STATUS ns16550vxbHup
 
     VXB_NS16550_SPIN_LOCK_ISR_TAKE(pChan);
 
-    pChan->mcr &= (~(MCR_RTS | MCR_DTR));
+    pChan->mcr = (UINT8) (pChan->mcr & ~(MCR_RTS | MCR_DTR));
     REG_SET(MCR, pChan, pChan->mcr);
     value = (RxCLEAR | TxCLEAR);
     REG_SET(FCR, pChan, value);
@@ -2039,7 +2047,7 @@ LOCAL STATUS ns16550vxbOpen
     UINT8   value = 0;
 
     REG_GET(MCR, pChan, mask);
-    mask &= (MCR_RTS | MCR_DTR);
+    mask = (UINT8) (mask & (MCR_RTS | MCR_DTR));
 
     if (mask != (MCR_RTS | MCR_DTR))
         {
@@ -2174,14 +2182,18 @@ LOCAL STATUS ns16550vxbModeSet
         else
             {
             REG_GET(MSR, pChan, mask);
-            mask &= MSR_CTS;
+	    	mask = (UINT8) (mask & MSR_CTS);
 
-            /* if the CTS is asserted enable Tx interrupt */
+	    /* if the CTS is asserted enable Tx interrupt */
 
             if (mask & MSR_CTS)
                 pChan->ier |= TxFIFO_BIT;    /* enable Tx interrupt */
             else
-                pChan->ier &= (~TxFIFO_BIT); /* disable Tx interrupt */
+			{
+			/* disable Tx interrupt */
+
+			pChan->ier = (UINT8) (pChan->ier & (~TxFIFO_BIT));
+			}
 
             REG_SET(IER, pChan, pChan->ier);
             }
@@ -2457,13 +2469,13 @@ LOCAL void ns16550vxbInt
 
     while ( pChan != NULL )
         {
-	VXB_NS16550_ISR_SET(pChan);
+		VXB_NS16550_ISR_SET(pChan);
 
         /* read the Interrupt Status Register (Int. Ident.) */
 
         REG_GET(IIR, pChan, iirValue);
         intStatus = (char)iirValue;
-        intStatus &= 0x0f;
+		intStatus = (UINT8) (intStatus & 0x0f);
         
 		/* 
         *解决多个串口复用同一中断时，启动时由于部分串口在未完全初始化的情况下调用
@@ -2499,62 +2511,66 @@ LOCAL void ns16550vxbInt
 
             case IIR_RDA:           /* received data available */
             case IIR_TIMEOUT:
-		{
-                /*
-                 * receiver FIFO interrupt. In some cases, IIR_RDA is
-                 * not indicated in IIR register when there is more
-                 * than one character in FIFO.
-                 */
+			{
+			/*
+			 * receiver FIFO interrupt. In some cases, IIR_RDA is
+			 * not indicated in IIR register when there is more
+			 * than one character in FIFO.
+			 */
 
-		pChan->ier &= ~(RxFIFO_BIT);	/* indicate to disable Rx Int */
-		REG_SET(IER, pChan, pChan->ier);
+			/* indicate to disable Rx Int */
 
-		/*
-		 * Another spinlock is taken in isrDeferJobAdd().
-		 * So release spinlock before entering into isrDeferJobAdd().
-		 */
+			pChan->ier = (UINT8) (pChan->ier & ~(RxFIFO_BIT));
+			REG_SET(IER, pChan, pChan->ier);
 
-		VXB_NS16550_ISR_CLEAR(pChan);
+			/*
+			 * Another spinlock is taken in isrDeferJobAdd().
+			 * So release spinlock before entering into isrDeferJobAdd().
+			 */
 
-		/* defer the job */
+			VXB_NS16550_ISR_CLEAR(pChan);
 
-		isrDeferJobAdd (pChan->queueId, &pChan->isrDefRd);
+			/* defer the job */
 
-		goto nextChan;
-		}
+			isrDeferJobAdd (pChan->queueId, &pChan->isrDefRd);
+
+			goto nextChan;
+			}
 
             case IIR_THRE:  /* transmitter holding register ready */
 
-		/*
-		 * If Tx deferred job is still in queue, no need to add
-		 * another one and save the number of the job queue to prevent
-		 * from the queue overflow.
-		 */
+			/*
+			 * If Tx deferred job is still in queue, no need to add
+			 * another one and save the number of the job queue to prevent
+			 * from the queue overflow.
+			 */
 
-		pChan->ier &= ~(TxFIFO_BIT);	/* indicate to disable Tx Int */
+			/* indicate to disable Tx Int */
 
-		if (!pChan->txDefer)
-		    {
-		    /* defer the job */
+			pChan->ier = (UINT8) (pChan->ier & ~(TxFIFO_BIT));
 
-		    pChan->txDefer = TRUE;
+			if (!pChan->txDefer)
+			    {
+			    /* defer the job */
 
-		    REG_SET(IER, pChan, pChan->ier);
+			    pChan->txDefer = TRUE;
 
-		    /*
-		     * Another spinlock is taken in isrDeferJobAdd ().
-		     * So release spinlock before entering into
-		     * isrDeferJobAdd().
-		     */
+			    REG_SET(IER, pChan, pChan->ier);
 
-		    VXB_NS16550_ISR_CLEAR(pChan);
+			    /*
+			     * Another spinlock is taken in isrDeferJobAdd ().
+			     * So release spinlock before entering into
+			     * isrDeferJobAdd().
+			     */
 
-		    /* defer the job */
+			    VXB_NS16550_ISR_CLEAR(pChan);
 
-		    isrDeferJobAdd (pChan->queueId, &pChan->isrDefWr);
+			    /* defer the job */
 
-		    goto nextChan;
-		    }
+			    isrDeferJobAdd (pChan->queueId, &pChan->isrDefWr);
+
+			    goto nextChan;
+			    }
 
                 break;
 
@@ -2578,7 +2594,7 @@ LOCAL void ns16550vxbInt
                         pChan->ier |= TxFIFO_BIT;
                     else
                         /* CTS was turned off */
-                        pChan->ier &= (~TxFIFO_BIT);
+					pChan->ier = (UINT8) (pChan->ier & (~TxFIFO_BIT));
                     }
 #else   /* SPR_74889_FIX */
                 /* if CTS is asserted by modem, enable Tx interrupt */
@@ -2659,23 +2675,26 @@ LOCAL int ns16550vxbTxStartup
         else
             {
             REG_GET(MSR, pChan, mask);
-            mask &= MSR_CTS;
+	    	mask = (UINT8) (mask & MSR_CTS);
 
             /* if the CTS is asserted enable Tx interrupt */
 
             if (mask & MSR_CTS)
-		{
-		/*
-		 * If there is a job queue already posted for transmit, not
-		 * necessary to enable Tx interrupt.
-		 */
+			{
+				/*
+				 * If there is a job queue already posted for transmit, not
+				 * necessary to enable Tx interrupt.
+				 */
+				if (!pChan->txDefer)
+	                    pChan->ier |= TxFIFO_BIT;    /* enable Tx interrupt */
+			}
+		    else
+			{
+			/* disable Tx interrupt */
 
-		if (!pChan->txDefer)
-                    pChan->ier |= TxFIFO_BIT;    /* enable Tx interrupt */
-		}
-            else
-                pChan->ier &= (~TxFIFO_BIT); /* disable Tx interrupt */
-            }
+				pChan->ier = (UINT8) (pChan->ier & (~TxFIFO_BIT));
+			}
+	    }
 
         REG_SET(IER, pChan, pChan->ier);
 

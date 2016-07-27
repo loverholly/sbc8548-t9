@@ -508,8 +508,8 @@ const struct hcfDevice hcfDeviceList[] = {
     { "m85xxTimerDev", 0, VXB_BUSID_PLB, 0, m85xxTimerNum, m85xxTimerResources},
 
     { "ns16550", 0, VXB_BUSID_PLB, 0, ns165500Num, ns165500Resources },
-    { "ns16550", 1, VXB_BUSID_PLB, 0, ns165501Num, ns165501Resources },
 #ifdef PRJ_BUILD
+    { "ns16550", 1, VXB_BUSID_PLB, 0, ns165501Num, ns165501Resources },
     { "ns16550", 2, VXB_BUSID_PLB, 0, serial0Num, serial0Resources},
     { "ns16550", 3, VXB_BUSID_PLB, 0, serial1Num, serial1Resources},
     { "ns16550", 4, VXB_BUSID_PLB, 0, serial2Num, serial2Resources},
