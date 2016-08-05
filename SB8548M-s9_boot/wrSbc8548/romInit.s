@@ -468,7 +468,7 @@ ccsrbarWait:
 	/* load BR0 */
 	WRITEADR(r6,r7,M85XX_BR0 (CCSBAR),FLASH_BASE_ADRS|0x1001)
 	/* load OR0 */
-	WRITEADR(r6,r7,M85XX_OR0 (CCSBAR),FLASH_ADRS_MASK|0xc80)
+	WRITEADR(r6,r7,M85XX_OR0 (CCSBAR),FLASH_ADRS_MASK|0xca0)
 
 	isync
 	sync
@@ -491,7 +491,7 @@ ccsrbarWait:
 	mtctr   r4
 	WRITEADR(r6,r7,M85XX_DCR0(CCSBAR),0xbc0f1bf0) 
 	WRITEADR(r6,r7,M85XX_DCR1(CCSBAR),0x00078080) 
-	WRITEADR(r6,r7,M85XX_LCRR(CCSBAR),0x80030004)/* lbc分频为8,50MHz */ 
+	WRITEADR(r6,r7,M85XX_LCRR(CCSBAR),0x80030004)/* lbc分频为8,66MHz,533MHz/8=66MHz */ 
 	
 	isync
 	sync
@@ -620,7 +620,7 @@ ddrDelay:
         ori    r4,r4,0x0000
         mtspr  MAS0, r4
         addis  r5,0,0xc000           /* V = 1, IPROT = 1, TID = 0*/
-        ori    r5,r5,_MMU_TLB_SZ_256M  /* TS = 0, TSIZE = 256 MByte page size*/
+        ori    r5,r5,_MMU_TLB_SZ_1G  /* TS = 0, TSIZE = 256 MByte page size*/
         mtspr  MAS1, r5
         addis  r6,0,HI(LOCAL_MEM_LOCAL_ADRS) /* EPN = LOCAL_MEM_LOCAL_ADRS */
         ori    r6,r6,0x0004          /* WIMGE = 00000 */
@@ -652,29 +652,6 @@ ddrDelay:
         mtspr  MAS3, r7
         tlbwe         
         tlbsync   
-	   
-#if (LOCAL_MEM_SIZE > 0x10000000)
-        /*
-         * TLB1 #3.  Main SDRAM - Cached with coherence
-         *           LOCAL_MEM_LOCAL_ADRS -> LOCAL_MEM_LOCAL_ADRS + LOCAL_MEM_SIZE
-         * Attributes: UX/UW/UR/SX/SW/SR
-         */
-
-        addis  r4,0,0x1003           /* TLBSEL = TLB1(CAM) , ESEL = 2*/
-        ori    r4,r4,0x0000
-        mtspr  MAS0, r4
-        addis  r5,0,0xc000           /* V = 1, IPROT = 1, TID = 0*/
-        ori    r5,r5,_MMU_TLB_SZ_256M  /* TS = 0, TSIZE = 256 MByte page size*/
-        mtspr  MAS1, r5
-        addis  r6,0,0x1000         /* EPN = LOCAL_MEM_LOCAL_ADRS */
-        ori    r6,r6,0x0004          /* WIMGE = 00000 */
-        mtspr  MAS2, r6
-        addis  r7,0,0x1000         /* RPN = LOCAL_MEM_LOCAL_ADRS */
-        ori    r7,r7,0x003f          /* User/Supervisor XWR*/
-        mtspr  MAS3, r7
-        tlbwe
-        tlbsync
-#endif	 
 	               
         b  cold			
 FUNC_END(resetEntry)

@@ -81,7 +81,7 @@ TLB_ENTRY_DESC sysStaticTlbDesc [] =
 
     /* LOCAL MEMORY needed be second entry here and one TLB would be 256M */
 
-    { 0x00000000, 0x0, 0x00000000, _MMU_TLB_TS_0 | _MMU_TLB_SZ_256M |
+    { 0x00000000, 0x0, 0x00000000, _MMU_TLB_TS_0 | _MMU_TLB_SZ_1G |
         _MMU_TLB_PERM_W | _MMU_TLB_PERM_X | _MMU_TLB_ATTR_M |
         CAM_DRAM_CACHE_MODE | _MMU_TLB_IPROT
     },

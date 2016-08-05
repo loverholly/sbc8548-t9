@@ -654,7 +654,7 @@ IMPORT char* rioHostAdrs;
 
 /* NOTE this should match the LAWAR SIZE in romInit for the chosen SDRAM */
 
-#define LOCAL_MEM_SIZE          0x10000000  /* 256 Mbyte memory available */
+#define LOCAL_MEM_SIZE          0x40000000  /* 1G Mbyte memory available */
 #define LOCAL_MEM_LOCAL_ADRS    0x00000000  /* Base of RAM */
 
 #define DDR_SDRAM_LOCAL_ADRS       LOCAL_MEM_LOCAL_ADRS
