@@ -12,81 +12,65 @@ F2X_GID f2xTffsGid[MAX_NORFLASH_TFFS_PARTITION] = {(F2X_GID)NULL, (F2X_GID)NULL,
 
 unsigned int f2xFlashBase()
 {
-	return FLASH1_BASE_ADRS;
+	return FLASH_BASE_ADRS;
 }
 
 unsigned int f2xFlashSize()
 {
-	return 0x4000000;	/* tmd,K9上面只用了32M不是64M,shit */
+	return 0x8000000;	/* tmd,K9上面只用了32M不是64M,shit */
 }
 
 STATUS  f2xMtdRegister()
-    {
-        static int i=0;
-        int  wbCapbility=0;
-        unsigned int adrs_part[4]={0};
-		#define BOOTROM_SPACE_SIZE 0x100000
-		#define PARAM_SPACE_SIZE   0x100000
-		#define VXWORKS_SPACE_SIZE 0x800000
-        unsigned int adrs_size[4]={BOOTROM_SPACE_SIZE,PARAM_SPACE_SIZE,VXWORKS_SPACE_SIZE,0};
-
+{
+	static int i=0;
+	int  wbCapbility=0;
+	unsigned int adrs_part[4]={0};
+#define BOOTROM_SPACE_SIZE 0x100000
+#define PARAM_SPACE_SIZE   0x100000
+#define VXWORKS_SPACE_SIZE 0x800000
+	unsigned int adrs_size[4]={BOOTROM_SPACE_SIZE,PARAM_SPACE_SIZE,VXWORKS_SPACE_SIZE,0};
         
-        adrs_part[0]=f2xFlashBase()-adrs_size[0]+f2xFlashSize();/*bootrom*/
-        adrs_part[1]=adrs_part[0]-adrs_size[1];/*NVRAM*/
-        adrs_part[2]=adrs_part[1]-adrs_size[2];/*VXWORKS & APP*/
-        adrs_part[3]=f2xFlashBase();
-        adrs_size[3]=adrs_part[2]-adrs_part[3];
-        /*adrs_size[3]=0x400000;*/
-        for(i=0;i<4;i++)
-            {
-              F2X_GID gid;
-			  F2X_RID rid;
-			  if (i == 0)
-			  {
-				  rid = f2xRegionCreate((char*)0xfff00000,
-										2,
-										0x100000, /* bootrom空间为1Mbyte */
-										2,
-										0x4000, /* K9上面的flash大小为1Mbyte和64Mbyte结构 */
-				                        2, F29_16BIT_TYPE | wbCapbility,
-										NULL, (VOIDFUNCPTR) NULL, NONE);    
-			  }
-			  else
-			  {
-				  rid = f2xRegionCreate(
-                        (char *)adrs_part[i],/* 起始地址 */
-                        2,
-                        adrs_size[i], /* region 大小 */
-                        2,
-                        0x20000,
-                        2, F29_16BIT_TYPE | wbCapbility,
-                        NULL, (VOIDFUNCPTR) NULL, NONE);
-			  }
-               if (!rid)
-                {
-                    printf("create region 0x%x size 0x%x failed", adrs_part[i],adrs_size[i]);
-                    return ERROR;
-                }
-               gid=f2xGroupCreate(rid);
-               if (!gid)
-                {
-            	   printf("create group 0x%x size 0x%x failed", adrs_part[i],adrs_size[i]);
-                    return ERROR;
-                } 
-               f2xMtd[i]=gid;
+	adrs_part[0]=f2xFlashBase()-adrs_size[0]+f2xFlashSize();/*bootrom*/
+	adrs_part[1]=adrs_part[0]-adrs_size[1];/*NVRAM*/
+	adrs_part[2]=adrs_part[1]-adrs_size[2];/*VXWORKS & APP*/
+	adrs_part[3]=f2xFlashBase();
+	adrs_size[3]=adrs_part[2]-adrs_part[3];
+	
+	for(i=0;i<4;i++)
+	{
+		F2X_GID gid;
+		F2X_RID rid;
+		rid = f2xRegionCreate(
+			(char *)adrs_part[i],/* 起始地址 */
+			2,
+			adrs_size[i], /* region 大小 */
+			2,
+			0x20000,
+			2, F29_16BIT_TYPE | wbCapbility,
+			NULL, (VOIDFUNCPTR) NULL, NONE);
+		if (!rid)
+		{
+			printf("create region 0x%x size 0x%x failed", adrs_part[i],adrs_size[i]);
+			return ERROR;
+		}
+		gid=f2xGroupCreate(rid);
+		if (!gid)
+		{
+			printf("create group 0x%x size 0x%x failed", adrs_part[i],adrs_size[i]);
+			return ERROR;
+		} 
+		f2xMtd[i]=gid;
 
-               if(i==1) /*NVRAM*/
-                {
-                    sysNvRamAdd(rid);
-                }
+		if(i==1) /*NVRAM*/
+		{
+			sysNvRamAdd(rid);
+		}
               
-            }
+	}
 
-         f2xRegister(f2xMtd[2]);/*register vxworks ,app as tffs*/
-         f2xRegister(f2xMtd[3]);/*register tffs*/
-        
-        
-    }
+	f2xRegister(f2xMtd[2]);/*register vxworks ,app as tffs*/
+	f2xRegister(f2xMtd[3]);/*register tffs*/
+}
 
 STATUS f2xSet
 (
@@ -94,7 +78,7 @@ STATUS f2xSet
     char *  pSrc,      /* source buffer */
     int     nbytes,    /* number of bytes to copy */
     int     offset     /* byte offset into group */
- )
+	)
 {
 	int ret=ERROR;
 	if(f2xMtd[i]!=0)
@@ -109,7 +93,7 @@ STATUS f2xGet
     char *  pDst,      /* source buffer */
     int     nbytes,    /* number of bytes to copy */
     int     offset     /* byte offset into group */
- )
+	)
 {
 	int ret=ERROR;
 	if(f2xMtd[i]!=0)
@@ -148,12 +132,12 @@ LOCAL void sysTffsInit (void)
     UINT32 iz = 2;
     int oldTick;
 
-		/*
-		 * we assume followings:
-		 *   - no interrupts except timer is happening.
-		 *   - the loop count that consumes 1 msec is in 32 bit.
-		 * it is done in the early stage of usrRoot() in tffsDrv().
-		 */
+	/*
+	 * we assume followings:
+	 *   - no interrupts except timer is happening.
+	 *   - the loop count that consumes 1 msec is in 32 bit.
+	 * it is done in the early stage of usrRoot() in tffsDrv().
+	 */
 
     oldTick = tickGet();
     while (oldTick == tickGet())    /* wait for next clock interrupt */
@@ -168,7 +152,7 @@ LOCAL void sysTffsInit (void)
 
     sysTffsMsecLoopCount = ix * sysClkRateGet() / 1000;
 
-		/* registers the MTD drivers according to it's Hardware Geometry */
+	/* registers the MTD drivers according to it's Hardware Geometry */
 	f2xMtdRegister();
  
 	/*sysTffsFormat(0);*/
@@ -184,7 +168,7 @@ int sysTffsProgressCb (int totalUnitsToFormat, int totalUnitsFormattedSoFar)
            totalUnitsFormattedSoFar, totalUnitsToFormat,
            100 * totalUnitsFormattedSoFar / totalUnitsToFormat,
            1000 * totalUnitsFormattedSoFar / totalUnitsToFormat % 10
-           );
+		);
     if (totalUnitsFormattedSoFar == totalUnitsToFormat)
         printf ("\n");
     return flOK;
@@ -193,7 +177,7 @@ int sysTffsProgressCb (int totalUnitsToFormat, int totalUnitsFormattedSoFar)
 STATUS sysTffsFormat (int tffsNo)
 {
     STATUS status;
-        /* No fallow area */
+	/* No fallow area */
     tffsDevFormatParams params = 
         {
             {0x000000l, 99, 1,  0x10000l, sysTffsProgressCb, {0,0,0,0}, NULL, 2, 0, NULL}, 
@@ -203,7 +187,7 @@ STATUS sysTffsFormat (int tffsNo)
     if(tffsNo > noOfDrives)
         return ERROR;
 	
-        /* we assume that the drive number 0 is RFA */
+	/* we assume that the drive number 0 is RFA */
 
     printf("Formatting volume %d...",tffsNo);
 	

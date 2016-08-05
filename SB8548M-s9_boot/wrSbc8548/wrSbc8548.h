@@ -401,6 +401,7 @@ typedef volatile UINT8 VUINT8;   /* volatile unsigned byte */
 #define CS2_CONFIG                0x088
 #define CS3_CONFIG                0x08C
 #define EXTENDED_REF_REC          0x100
+#define TIMING_CFG_3              0x100	/* 这里是PPC的寄存器描述有误,实际情况应该是TIMING_CFG_3 */
 #define TIMING_CFG_0              0x104
 #define TIMING_CFG_1              0x108
 #define TIMING_CFG_2              0x10C

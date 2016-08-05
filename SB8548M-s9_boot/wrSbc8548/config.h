@@ -569,7 +569,7 @@ IMPORT char* rioHostAdrs;
 
 
 /* LBC CS0 - flash 0 - 8MB, 8-bit flash - default for bootrom */
-
+#if 0
 #define FLASH_BASE_ADRS                 0xfff00000
 #define FLASH_ADRS_MASK                 0xfff00000
 
@@ -582,7 +582,14 @@ IMPORT char* rioHostAdrs;
 
 #define TFFS_FLASH_TLB_SIZE             _MMU_TLB_SZ_64M
 #define TOTAL_FLASH_SIZE                0x4000000
+#else  /* #else if 1 */
+#define FLASH_BASE_ADRS                 0xf8000000
+#define FLASH_ADRS_MASK                 0xf8000000
 
+#define BOOT_FLASH_TLB_SIZE             _MMU_TLB_SZ_256M
+
+#define TOTAL_FLASH_SIZE                0x4000000
+#endif
 
 
 /* LBC CS3 - SDRAM */
@@ -620,13 +627,13 @@ IMPORT char* rioHostAdrs;
 
 /* NVRam */
 
-#   define FLASH_ADRS           FLASH1_BASE_ADRS
+#   define FLASH_ADRS           FLASH_BASE_ADRS
 #   define FLASH_SPACE_SIZE     TOTAL_FLASH_SIZE
 #   define FLASH_WIDTH          2
 #   define FLASH_CHIP_WIDTH     2
 #   define FLASH_SECTOR_SIZE    0x00020000
 #   define FLASH_SECTOR_MASK    0xfffe0000
-#   define NV_RAM_ADRS          (FLASH1_BASE_ADRS)
+#   define NV_RAM_ADRS          (FLASH_BASE_ADRS)
 #   define NV_RAM_SIZE          0X100000
 #   define NV_MAC_ADRS_OFFSET   0x200
 
