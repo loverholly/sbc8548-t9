@@ -112,18 +112,31 @@ STATUS appRunInit()
 
 void usrNs16550Init(void)
 {
-		/* LBC CS4 - UART - 1MB, 8-bit, modifyed by lih, 20140827 */
+	/* CPU uart2 */
+    sysSerialChanConnect(1);
+    ttyDrv();
+    ttyDevCreate ("/Rs232/0", sysSerialChanGet(1), 1024, 1024);
+
+	/* LBC CS2 - UART - 1MB, 8-bit, modifyed by lih, 20140827 */
     sysSerialChanConnect(2);
     ttyDrv();
-    ttyDevCreate ("/Rs232/0", sysSerialChanGet(2), 1024, 1024);
-
+    ttyDevCreate ("/Rs485/0", sysSerialChanGet(2), 1024, 1024);
+	
+	/* LBC CS4 - UART - 1MB, 8-bit, modifyed by lih, 20140827 */
     sysSerialChanConnect(3);
     ttyDrv();
-    ttyDevCreate ("/Rs232/1", sysSerialChanGet(3), 1024, 1024);
-
+    ttyDevCreate ("/Rs485/1", sysSerialChanGet(3), 1024, 1024);
+	
+	/* LBC CS5 - UART - 1MB, 8-bit, modifyed by lih, 20140827 */
     sysSerialChanConnect(4);
     ttyDrv();
-    ttyDevCreate ("/Rs232/2", sysSerialChanGet(4), 1024, 1024);
+    ttyDevCreate ("/Rs485/2", sysSerialChanGet(4), 1024, 1024);
+	
+	/* LBC CS6 - UART - 1MB, 8-bit, modifyed by lih, 20140827 */
+    sysSerialChanConnect(5);
+    ttyDrv();
+    ttyDevCreate ("/Rs485/3", sysSerialChanGet(5), 1024, 1024);
+
 }
 
 /******************************************************************************

@@ -37,7 +37,7 @@ modification history
 #include <hwif/util/vxbParamSys.h>
 #include <hwif/vxbus/vxbIntrCtlr.h>
 #include <hwif/intCtlr/vxbEpicIntCtlr.h>
-#include <config.h>
+#include "config.h"
 #include "mot85xxPci.h"
 
 #define XTSEC_NAME "mottsec"
@@ -316,12 +316,16 @@ const struct hcfResource ns165501Resources[] = {
 
 #ifdef PRJ_BUILD
 /* 定义串口寄存器以及串口参考时钟 */
-#define SERIAL0_BASE_ADRS (UART_BASE_ADRS + 0x00)
-#define SERIAL1_BASE_ADRS (UART_BASE_ADRS + 0x10)
-#define SERIAL2_BASE_ADRS (UART_BASE_ADRS + 0x20)
-/* #define UART_FREQ (14745600) */
-#define UART_FREQ (24000000)
-#define UART_IRQ  (EPIC_VEC_EXT_IRQ0 + 5)
+#define SERIAL0_BASE_ADRS (LBC_CS2_LOCAL_ADRS)
+#define SERIAL1_BASE_ADRS (LBC_CS4_LOCAL_ADRS)
+#define SERIAL2_BASE_ADRS (LBC_CS5_LOCAL_ADRS)
+#define SERIAL3_BASE_ADRS (LBC_CS6_LOCAL_ADRS)
+
+#define UART_FREQ (14745600)
+#define SERIAL0_IRQ  (EPIC_VEC_EXT_IRQ0 + 1)
+#define SERIAL1_IRQ	 (EPIC_VEC_EXT_IRQ0 + 2)
+#define SERIAL2_IRQ	 (EPIC_VEC_EXT_IRQ0 + 3)
+#define SERIAL3_IRQ	 (EPIC_VEC_EXT_IRQ0 + 4)
 #define DUART_REG_ADDR_INTERVAL 1                     /* duart vector register distance */
 
 
@@ -332,9 +336,9 @@ static unsigned int rs422Division(unsigned int xtal, unsigned int baud)
 
 const struct hcfResource serial0Resources[] = {
     { VXB_REG_BASE,  HCF_RES_INT,  {(void *)SERIAL0_BASE_ADRS} },
-    { "irq",         HCF_RES_INT,  {(void *)UART_IRQ} },
+    { "irq",         HCF_RES_INT,  {(void *)SERIAL0_IRQ} },
     { "regInterval", HCF_RES_INT,  {(void *)DUART_REG_ADDR_INTERVAL} },
-    { "irqLevel",    HCF_RES_INT,  {(void *)UART_IRQ} },
+    { "irqLevel",    HCF_RES_INT,  {(void *)SERIAL0_IRQ} },
     { "clkFreq",	 HCF_RES_INT,  {(void *)UART_FREQ} },
     { "divisorCalc", HCF_RES_ADDR, {(void *)rs422Division}}
 };
@@ -342,9 +346,9 @@ const struct hcfResource serial0Resources[] = {
 
 const struct hcfResource serial1Resources[] = {
     { VXB_REG_BASE,  HCF_RES_INT,  {(void *)SERIAL1_BASE_ADRS} },
-    { "irq",         HCF_RES_INT,  {(void *)UART_IRQ} },
+    { "irq",         HCF_RES_INT,  {(void *)SERIAL1_IRQ} },
     { "regInterval", HCF_RES_INT,  {(void *)DUART_REG_ADDR_INTERVAL} },
-    { "irqLevel",    HCF_RES_INT,  {(void *)UART_IRQ} },
+    { "irqLevel",    HCF_RES_INT,  {(void *)SERIAL1_IRQ} },
     { "clkFreq",	 HCF_RES_INT,  {(void *)UART_FREQ} },
     { "divisorCalc", HCF_RES_ADDR, {(void *)rs422Division}}
 };
@@ -352,13 +356,22 @@ const struct hcfResource serial1Resources[] = {
 
 const struct hcfResource serial2Resources[] = {
     { VXB_REG_BASE,  HCF_RES_INT,  {(void *)SERIAL2_BASE_ADRS} },
-    { "irq",         HCF_RES_INT,  {(void *)UART_IRQ} },
+    { "irq",         HCF_RES_INT,  {(void *)SERIAL2_IRQ} },
     { "regInterval", HCF_RES_INT,  {(void *)DUART_REG_ADDR_INTERVAL} },
-    { "irqLevel",    HCF_RES_INT,  {(void *)UART_IRQ} },
+    { "irqLevel",    HCF_RES_INT,  {(void *)SERIAL2_IRQ} },
     { "clkFreq",	 HCF_RES_INT,  {(void *)UART_FREQ} },
     { "divisorCalc", HCF_RES_ADDR, {(void *)rs422Division}}
 };
 #define serial2Num NELEMENTS(serial2Resources)
+const struct hcfResource serial3Resources[] = {
+    { VXB_REG_BASE,  HCF_RES_INT,  {(void *)SERIAL3_BASE_ADRS} },
+    { "irq",         HCF_RES_INT,  {(void *)SERIAL3_IRQ} },
+    { "regInterval", HCF_RES_INT,  {(void *)DUART_REG_ADDR_INTERVAL} },
+    { "irqLevel",    HCF_RES_INT,  {(void *)SERIAL3_IRQ} },
+    { "clkFreq",	 HCF_RES_INT,  {(void *)UART_FREQ} },
+    { "divisorCalc", HCF_RES_ADDR, {(void *)rs422Division}}
+};
+#define serial3Num NELEMENTS(serial3Resources)
 #endif	/* PRJ_BUILD */
 
 const struct intrCtlrInputs ppcIntCtlrInputs[] = {
@@ -413,11 +426,11 @@ struct intrCtlrInputs epicInputs[] = {
     { EPIC_TSEC4ERR_INT_VEC, XTSEC_NAME, 3, 2 },
 #ifdef PRJ_BUILD				/* 添加外部中断的定义 */
     {EPIC_VEC_EXT_IRQ0+0,     "irq0",0,0},
-    {EPIC_VEC_EXT_IRQ0+1,     "irq1",0,0},
-    {EPIC_VEC_EXT_IRQ0+2,     "irq2",0,0},
-    {EPIC_VEC_EXT_IRQ0+3,     "irq3",0,0},
-    {EPIC_VEC_EXT_IRQ0+4,     "irq4",0,0},
-    {EPIC_VEC_EXT_IRQ0+5,     "irq5",0,0},
+    {EPIC_VEC_EXT_IRQ0+1,     "ns16550",2,0},
+    {EPIC_VEC_EXT_IRQ0+2,     "ns16550",3,0},
+    {EPIC_VEC_EXT_IRQ0+3,     "ns16550",4,0},
+    {EPIC_VEC_EXT_IRQ0+4,     "ns16550",5,0},
+    {EPIC_VEC_EXT_IRQ0+5,     "ns16550",6,0},
 #endif
 };
 
@@ -468,6 +481,7 @@ const struct hcfDevice hcfDeviceList[] = {
     { "ns16550", 2, VXB_BUSID_PLB, 0, serial0Num, serial0Resources},
     { "ns16550", 3, VXB_BUSID_PLB, 0, serial1Num, serial1Resources},
     { "ns16550", 4, VXB_BUSID_PLB, 0, serial2Num, serial2Resources},
+    { "ns16550", 5, VXB_BUSID_PLB, 0, serial3Num, serial3Resources},
 #endif	/* PRJ_BUILD */
 
 #ifdef INCLUDE_MV88E1X11PHY

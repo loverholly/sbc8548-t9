@@ -9,43 +9,43 @@
  */
 
 /*
-modification history
---------------------
-01t,16oct09,x_f  Remove RAM_LOW_ADRS and RAM_HIGH_ADRS defines. (WIND00185815)
-01s,15sep09,l_z  Remove unused INCLUDE_PPC_FPU. (WIND00153695)
-01r,16apr09,x_z  add TFFS_FLASH_TLB_SIZE for the TFFS FLASH TLB 
-                 item.(WIND00161740)
-01q,08jan09,syt  Increased BSP_REV.
-01p,20aug08,d_l  break default mac(ENET_DEFAULT) to three bytes.(WIND00121398)
-01o,08jul08,l_z  updated BSP_REV to "/5" for VxWorks 6.7.
-01n,19nov07,dtr  Change TOOL name to e500v2diab/gnu.
-01m,08nov07,dtr  Support hard float build.
-01l,21sep07,b_m  add ns16550, ppcIntCtlr, epic, m85xxTimer vxbus drivers.
-01k,17sep07,h_k  removed INCLUDE_PCI_BUS_SHOW. (CQ:105028)
-01j,10sep07,wap  Switch to VxBus PCI driver (WIND00104076)
-01i,21aug07,mmi  remove legacy power management define
-01h,07aug07,dtr  Update for latest Rio Driver.
-01g,31jul07,agf  inc BSP_REV for vxWorks 6.6; change tsec drivers from hEND 
-                 to END
-01f,25may07,b_m  add BOOT_FLASH macro to support boot device selection.
-01e,23may07,b_m  add MAX_MAC_DEVS macro.
-01d,06apr07,b_m  modify to use m85xxCCSR driver.
-01c,27mar07,b_m  add MPC8548 rev.2 and TFFS define.
-01b,27feb06,kds  removing INCLUDE_SHOW_ROUTINES
-01a,30jan06,kds  Modify from cds8548/config.h/01d
+  modification history
+  --------------------
+  01t,16oct09,x_f  Remove RAM_LOW_ADRS and RAM_HIGH_ADRS defines. (WIND00185815)
+  01s,15sep09,l_z  Remove unused INCLUDE_PPC_FPU. (WIND00153695)
+  01r,16apr09,x_z  add TFFS_FLASH_TLB_SIZE for the TFFS FLASH TLB 
+  item.(WIND00161740)
+  01q,08jan09,syt  Increased BSP_REV.
+  01p,20aug08,d_l  break default mac(ENET_DEFAULT) to three bytes.(WIND00121398)
+  01o,08jul08,l_z  updated BSP_REV to "/5" for VxWorks 6.7.
+  01n,19nov07,dtr  Change TOOL name to e500v2diab/gnu.
+  01m,08nov07,dtr  Support hard float build.
+  01l,21sep07,b_m  add ns16550, ppcIntCtlr, epic, m85xxTimer vxbus drivers.
+  01k,17sep07,h_k  removed INCLUDE_PCI_BUS_SHOW. (CQ:105028)
+  01j,10sep07,wap  Switch to VxBus PCI driver (WIND00104076)
+  01i,21aug07,mmi  remove legacy power management define
+  01h,07aug07,dtr  Update for latest Rio Driver.
+  01g,31jul07,agf  inc BSP_REV for vxWorks 6.6; change tsec drivers from hEND 
+  to END
+  01f,25may07,b_m  add BOOT_FLASH macro to support boot device selection.
+  01e,23may07,b_m  add MAX_MAC_DEVS macro.
+  01d,06apr07,b_m  modify to use m85xxCCSR driver.
+  01c,27mar07,b_m  add MPC8548 rev.2 and TFFS define.
+  01b,27feb06,kds  removing INCLUDE_SHOW_ROUTINES
+  01a,30jan06,kds  Modify from cds8548/config.h/01d
 */
 
 #ifndef	__INCconfigh
 #define	__INCconfigh
 
 #ifdef __cplusplus
-    extern "C" {
+extern "C" {
 #endif /* __cplusplus */
 
 #define BSP_VER_1_1     1
 #define BSP_VER_1_2     1
-#define BSP_VERSION     "2.0"
-#define BSP_REV         "/6"
+#define BSP_VERSION     "1.0"
+#define BSP_REV         "/0"
 
 /* for MPC8548 rev.2 silicon */
 #define REV2_SILICON
@@ -189,8 +189,8 @@ modification history
  * PCI bus support, off by default
  *
 
-#define INCLUDE_PCI_BUS
- */
+ #define INCLUDE_PCI_BUS
+*/
 
 #ifdef INCLUDE_PCI_BUS
 
@@ -229,7 +229,7 @@ modification history
 
 #define DEFAULT_BOOT_LINE												\
 	"motetsec(0,0)host:vxWorks h=192.102.10.32 e=192.102.10.15 u=vxworks pw=vxworks f=0x0"
-		/* mac设备相关定义 */
+	/* mac设备相关定义 */
 #define MAX_MAC_DEVS         4          /* two network devices (fcc, scc) */
 
 /* default mac address */
@@ -246,11 +246,11 @@ modification history
 
 #ifdef E500_L1_PARITY_RECOVERY
 
-  /*
-   * *** NOTE FOR PROJECT FACILITY USERS ***
-   * Needs to use WRITETHROUGH, building with Project Facility must also
-   * change USER_D_CACHE_MODE and USER_I_CACHE_MODE in Project Facility.
-   */
+	/*
+	 * *** NOTE FOR PROJECT FACILITY USERS ***
+	 * Needs to use WRITETHROUGH, building with Project Facility must also
+	 * change USER_D_CACHE_MODE and USER_I_CACHE_MODE in Project Facility.
+	 */
 
 # define CACHE_LIBRARY_MODE     CACHE_WRITETHROUGH
 # define CAM_DRAM_CACHE_MODE    _MMU_TLB_ATTR_W
@@ -275,10 +275,10 @@ modification history
 #define  INCLUDE_L2_CACHE
 #undef   INCLUDE_L2_SRAM
 
-  /*
-   * If E500_L1_PARITY_RECOVERY is not efined, use local BSP handler.
-   * Works for L1 instr cache but not data cache.  Writethrough not needed.
-   */
+	/*
+	 * If E500_L1_PARITY_RECOVERY is not efined, use local BSP handler.
+	 * Works for L1 instr cache but not data cache.  Writethrough not needed.
+	 */
 
 #ifdef E500_L1_PARITY_RECOVERY
 
@@ -364,33 +364,33 @@ modification history
 
 /*
 
-CPU Addr                                  PCI Addr ( PCI1 or PCI2)
-PCI_LOCAL_MEM_BUS        -------------------------- PCI_MSTR_MEM_BUS
-                         -                        -
-                         -                        -
-PCI_LOCAL_MEM_BUS +      -------------------------- PCI_MSTR_MEM_BUS +
-PCI_LOCAL_MEM_SIZE       -                        - PCI_MSTR_MEM_SIZE
-                         -                        -
-                         -                        ----- PCI Bridge (for PCI1 only)
-                         -                        -     configuration regs
-                         -                        -
-CPU_PCI_MEM_ADRS  (PCI1) -------------------------- PCI_MEM_ADRS
-CPU_PCI_MEM_ADRS2 (PCI2) -                        - PCI_MEM_ADRS2
-CPU_PCI_MEM_ADRS3(PCIEX) -------------------------- PCI_MEM_ADRS3
-                         -                        -
-CPU_PCI_MEMIO_ADRS       -------------------------- PCI_MEMIO_ADRS
-CPU_PCI_MEMIO_ADRS2      -                        - PCI_MEMIO_ADRS2
-CPU_PCI_MEMIO_ADRS3      -                        - PCI_MEMIO_ADRS3
-                         -                        -
-CPU_PCI_IO_ADRS  (PCI1)  -------------------------- PCI_IO_ADRS
-CPU_PCI_IO_ADRS2 (PCI2)  -                        - PCI_IO_ADRS2
-CPU_PCI_IO_ADRS3 (PCIEX) -                        - PCI_IO_ADRS3
-                         -                        -
-CPU_PCI_IO_ADRS  (PCI1)+ -------------------------- PCI_IO_ADRS +
-CPU_PCI_IO_ADRS2 (PCI2)+                            PCI_IO_ADRS2 +
-CPU_PCI_IO_ADRS2 (PCI3)                             PCI_IO_ADRS3
-CPU_PCI_IO_SIZE          -                        - PCI_IO_SIZE
-                         -                        -
+  CPU Addr                                  PCI Addr ( PCI1 or PCI2)
+  PCI_LOCAL_MEM_BUS        -------------------------- PCI_MSTR_MEM_BUS
+  -                        -
+  -                        -
+  PCI_LOCAL_MEM_BUS +      -------------------------- PCI_MSTR_MEM_BUS +
+  PCI_LOCAL_MEM_SIZE       -                        - PCI_MSTR_MEM_SIZE
+  -                        -
+  -                        ----- PCI Bridge (for PCI1 only)
+  -                        -     configuration regs
+  -                        -
+  CPU_PCI_MEM_ADRS  (PCI1) -------------------------- PCI_MEM_ADRS
+  CPU_PCI_MEM_ADRS2 (PCI2) -                        - PCI_MEM_ADRS2
+  CPU_PCI_MEM_ADRS3(PCIEX) -------------------------- PCI_MEM_ADRS3
+  -                        -
+  CPU_PCI_MEMIO_ADRS       -------------------------- PCI_MEMIO_ADRS
+  CPU_PCI_MEMIO_ADRS2      -                        - PCI_MEMIO_ADRS2
+  CPU_PCI_MEMIO_ADRS3      -                        - PCI_MEMIO_ADRS3
+  -                        -
+  CPU_PCI_IO_ADRS  (PCI1)  -------------------------- PCI_IO_ADRS
+  CPU_PCI_IO_ADRS2 (PCI2)  -                        - PCI_IO_ADRS2
+  CPU_PCI_IO_ADRS3 (PCIEX) -                        - PCI_IO_ADRS3
+  -                        -
+  CPU_PCI_IO_ADRS  (PCI1)+ -------------------------- PCI_IO_ADRS +
+  CPU_PCI_IO_ADRS2 (PCI2)+                            PCI_IO_ADRS2 +
+  CPU_PCI_IO_ADRS2 (PCI3)                             PCI_IO_ADRS3
+  CPU_PCI_IO_SIZE          -                        - PCI_IO_SIZE
+  -                        -
 */
 
 /* PCI based addresses */
@@ -523,12 +523,12 @@ CPU_PCI_IO_SIZE          -                        - PCI_IO_SIZE
  */
 
 #ifndef _ASMLANGUAGE
-IMPORT char* rioHostAdrs;
+	IMPORT char* rioHostAdrs;
 
 #undef  SM_ANCHOR_ADRS
-#define SM_ANCHOR_ADRS  ((sysProcNumGet() == 0) ? \
-        ((char*) (LOCAL_MEM_LOCAL_ADRS + SM_ANCHOR_OFFSET)) : \
-        ((char*) ((UINT32)rioHostAdrs + SM_ANCHOR_OFFSET)))
+#define SM_ANCHOR_ADRS  ((sysProcNumGet() == 0) ?						\
+						 ((char*) (LOCAL_MEM_LOCAL_ADRS + SM_ANCHOR_OFFSET)) : \
+						 ((char*) ((UINT32)rioHostAdrs + SM_ANCHOR_OFFSET)))
 
 #endif
 
@@ -561,65 +561,58 @@ IMPORT char* rioHostAdrs;
  * be in the flash 1.
  */
 
-#define FLASH_WINDOW_SIZE               0x00800000
 #define CDS85XX_FLASH_RESERVED_SIZE     0x00100000
 
-
-/* LBC CS0 - flash 0 - 8MB, 8-bit flash - default for bootrom */
-#if 0
-#define FLASH_BASE_ADRS                 0xfff00000
-#define FLASH_ADRS_MASK                 0xfff00000
-
-#define BOOT_FLASH_TLB_SIZE             _MMU_TLB_SZ_1M
-
-/* LBC CS6 - flash 1 - 64MB, 32-bit flash SODIMM - for TFFS */
-
-#define FLASH1_BASE_ADRS                0xf8000000
-#define FLASH1_ADRS_MASK                0xfc000000
-
-#define TFFS_FLASH_TLB_SIZE             _MMU_TLB_SZ_64M
-#define TOTAL_FLASH_SIZE                0x4000000
-#else  /* #else if 1 */
+	/* CS0,boot,AppRun,vxworks,tffs */
 #define FLASH_BASE_ADRS                 0xf8000000
 #define FLASH_ADRS_MASK                 0xf8000000
-
 #define BOOT_FLASH_TLB_SIZE             _MMU_TLB_SZ_256M
-
 #define TOTAL_FLASH_SIZE                0x4000000
-#endif
 
-
-/* LBC CS3 - SDRAM */
-
-/* #define INCLUDE_LBC_SDRAM */
-
-/* NOTE this should match the LAWAR SIZE in romInit for the chosen SDRAM */
-
-#define LOCAL_MEM_SIZE2            0x4000000   /* 64 Mbyte memory available */
-#define LOCAL_MEM_LOCAL_ADRS2      0xf0000000  /* Base of RAM */
-#define LBC_SDRAM_LOCAL_SIZE_MASK  0xfc000000
-#define LBC_SDRAM_LOCAL_ADRS       LOCAL_MEM_LOCAL_ADRS2
-#define LBC_SDRAM_LOCAL_SIZE       LOCAL_MEM_SIZE2
-
-/* LBC CS3 - nvram, cadmus, ATM phy */
+	/* CS3,CPLD */
 #define INCLUDE_LBC_CS3
-
 #ifdef INCLUDE_LBC_CS3
 #define LBC_CS3_LOCAL_ADRS       0xf0100000
 #define LBC_CS3_LOCAL_SIZE_MASK  0xfff00000
 #define LBC_CS3_SIZE             0x0100000
-#endif
-			/* LBC CS5,使用MMU表项0的配置 */
+#endif	/* INCLUDE_LBC_CS3 */
+
+#define LBC_PERIAL_BASE          0xb0000000
+	/* CS2, UARTA */
+#define INCLUDE_LBC_CS2
+#ifdef	INCLUDE_LBC_CS2
+#define LBC_CS2_LOCAL_ADRS       0xb0000000
+#define LBC_CS2_LOCAL_SIZE_MASK  0xfff00000
+#define LBC_CS2_SIZE             0x100000
+#endif	/* INCLUDE_LBC_CS2 */
+
+	/* CS4,UARTB */
+#define INCLUDE_LBC_CS4
+#ifdef INCLUDE_LBC_CS4
+#define LBC_CS4_LOCAL_ADRS       0xb0100000
+#define LBC_CS4_LOCAL_SIZE_MASK  0xfff00000
+#define LBC_CS4_SIZE             0x100000
+#endif	/* INCLUDE_LBC_CS4 */
+	
+	/* CS5,UARTC */
 #define INCLUDE_LBC_CS5		
 #ifdef INCLUDE_LBC_CS5		
-#define LBC_CS5_LOCAL_ADRS       0xb0000000
-#define LBC_CS5_LOCAL_SIZE_MASK  0xfe000000
-#define LBC_CS5_LOCAL_SIEZ       0x02000000
-#define UART_BASE_ADRS           LBC_CS5_LOCAL_ADRS		
-#endif
-		
-#define INCLUDE_FLASH
+#define LBC_CS5_LOCAL_ADRS       0xb0200000
+#define LBC_CS5_LOCAL_SIZE_MASK  0xfff00000
+#define LBC_CS5_LOCAL_SIEZ       0x00100000
+#endif	/* INCLUDE_LBC_CS5 */
 
+		/* CS6,UARTC */
+#define INCLUDE_LBC_CS6
+#ifdef INCLUDE_LBC_CS6		
+#define LBC_CS6_LOCAL_ADRS       0xb0200000
+#define LBC_CS6_LOCAL_SIZE_MASK  0xfff00000
+#define LBC_CS6_LOCAL_SIEZ       0x00100000
+#endif	/* INCLUDE_LBC_CS6 */
+	
+	
+	
+#define INCLUDE_FLASH
 #ifdef INCLUDE_FLASH
 
 /* NVRam */
@@ -653,7 +646,6 @@ IMPORT char* rioHostAdrs;
 #define INCLUDE_DDR_SDRAM
 
 /* NOTE this should match the LAWAR SIZE in romInit for the chosen SDRAM */
-
 #define LOCAL_MEM_SIZE          0x40000000  /* 1G Mbyte memory available */
 #define LOCAL_MEM_LOCAL_ADRS    0x00000000  /* Base of RAM */
 
@@ -802,11 +794,11 @@ IMPORT char* rioHostAdrs;
 /* TrueFFS flash support */
 #define INCLUDE_BOOTXSYS  
 #ifdef __cplusplus
-    }
+}
 #endif /* __cplusplus */
 
 #endif  /* INCconfigh */
 
 #if defined(PRJ_BUILD)
-    #include "prjParams.h"
+#include "prjParams.h"
 #endif /* PRJ_BUILD */

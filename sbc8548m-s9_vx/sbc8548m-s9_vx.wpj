@@ -1420,6 +1420,14 @@ test_file.o
 C/C++ compiler
 <END>
 
+<BEGIN> FILE_$(PRJ_DIR)/test/test_uart.c_objects
+test_uart.o
+<END>
+
+<BEGIN> FILE_$(PRJ_DIR)/test/test_uart.c_tool
+C/C++ compiler
+<END>
+
 <BEGIN> FILE_$(PRJ_DIR)/usrAppInit.c_objects
 usrAppInit.o
 <END>
@@ -1469,7 +1477,8 @@ $(BSP_DIR)/sysALib.s \
 	$(PRJ_DIR)/usrRtpAppInit.c \
 	$(PRJ_DIR)/prjConfig.c \
 	$(PRJ_DIR)/linkSyms.c \
-	$(PRJ_DIR)/test/test_file.c
+	$(PRJ_DIR)/test/test_file.c \
+	$(PRJ_DIR)/test/test_uart.c
 <END>
 
 <BEGIN> VSB_DIR
@@ -2273,7 +2282,7 @@ FALSE
 <END>
 
 <BEGIN> WCC_wrSbc8548_PARAM_NUM_TTY
-2
+1
 <END>
 
 <BEGIN> WCC_wrSbc8548_PARAM_NV_BOOT_OFFSET
