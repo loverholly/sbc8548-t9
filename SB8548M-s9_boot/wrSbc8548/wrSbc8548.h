@@ -53,7 +53,7 @@ typedef volatile UINT8 VUINT8;   /* volatile unsigned byte */
 #endif /* M8260ABBREVIATIONS */
 
 /* Base Address of Memory Mapped Registers */
-#define CCSBAR  0xE0000000
+#define CCSBAR  0xEff00000
 
 /*
  * Timer clock divider ratios (in 2^n)

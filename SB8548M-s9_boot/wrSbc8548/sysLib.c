@@ -97,7 +97,7 @@ TLB_ENTRY_DESC sysStaticTlbDesc [] =
 	,
 	
     {
-    	LBC_PERIAL_BASE, 0x0, LBC_PERIAL_BASE, _MMU_TLB_TS_0 | _MMU_TLB_SZ_64M |
+    	LBC_PERIAL_BASE, 0x0, LBC_PERIAL_BASE, _MMU_TLB_TS_0 | _MMU_TLB_SZ_256M |
       _MMU_TLB_ATTR_I | _MMU_TLB_ATTR_G | _MMU_TLB_PERM_W | _MMU_TLB_IPROT
     }
 
@@ -156,8 +156,7 @@ TLB_ENTRY_DESC sysStaticTlbDesc [] =
     _MMU_TLB_TS_1   | _MMU_TLB_SZ_256M  | 0   |
     _MMU_TLB_PERM_W | _MMU_TLB_PERM_X   | _MMU_TLB_ATTR_I  |
     _MMU_TLB_ATTR_G
-    },  
-
+    }, 
 };
 
 int sysStaticTlbDescNumEnt = NELEMENTS (sysStaticTlbDesc);
@@ -1662,7 +1661,7 @@ void chipErrataCpu29Print(void)
 
 UINT32 vxImmrGet(void)
     {
-    return(CCSBAR + 0x80000);
+    return(CCSBAR);
     }
 
 /***************************************************************************

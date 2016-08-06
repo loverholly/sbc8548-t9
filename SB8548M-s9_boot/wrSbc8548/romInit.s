@@ -356,7 +356,7 @@ FUNC_LABEL(_resetEntry)
         ori    r4,r4,0x0000
         mtspr  MAS0, r4
         addis  r5,0,0xc000           /* V = 1, IPROT = 1, TID = 0*/
-        ori    r5,r5,_MMU_TLB_SZ_256M  /* TS = 0, TSIZE = 256 MByte page size*/
+        ori    r5,r5,_MMU_TLB_SZ_1G  /* TS = 0, TSIZE = 1024 MByte page size*/
         mtspr  MAS1, r5
         addis  r6,0,HI(LOCAL_MEM_LOCAL_ADRS) /* EPN = LOCAL_MEM_LOCAL_ADRS */
         ori    r6,r6,0x000a          /* WIMGE = 01010*/
@@ -392,32 +392,6 @@ FUNC_LABEL(_resetEntry)
         msync
         tlbwe
         tlbsync
-
-#if (LOCAL_MEM_SIZE > 0x10000000)
-        /*
-         * TLB1 #2.  Additional SDRAM - not cached 
-	 *           LOCAL_MEM_LOCAL_ADRS2 -> LOCAL_MEM_LOCAL_ADRS2 + LOCAL_MEM_SIZE
-         * Attributes: UX/UW/UR/SX/SW/SR
-         */
-
-        addis  r4,0,0x1003          /* TLBSEL = TLB1(CAM) , ESEL = 2*/
-        ori    r4,r4,0x0000
-        mtspr  MAS0, r4
-        addis  r5,0,0xc000           /* V = 1, IPROT = 0, TID = 0*/
-        ori    r5,r5,_MMU_TLB_SZ_256M /* TS = 0, TSIZE = 64 MByte page size*/
-        mtspr  MAS1, r5
-        addis  r6,0,HI(LOCAL_MEM_LOCAL_ADRS + 0x10000000) /* EPN = LOCAL_MEM_LOCAL_ADRS2 */
-        ori    r6,r6,0x000a          /* WIMGE = 01010 */
-        mtspr  MAS2, r6
-
-        addis  r7,0,HI(LOCAL_MEM_LOCAL_ADRS + 0x10000000) /* RPN = LOCAL_MEM_LOCAL_ADRS2 */
-        ori    r7,r7,0x0015          /* Supervisor XWR*/
-        mtspr  MAS3, r7
-        isync
-        msync
-        tlbwe                       
-        tlbsync                      
-#endif
 
 			
 	/* Setup the memory mapped register address */
@@ -620,7 +594,7 @@ ddrDelay:
         ori    r4,r4,0x0000
         mtspr  MAS0, r4
         addis  r5,0,0xc000           /* V = 1, IPROT = 1, TID = 0*/
-        ori    r5,r5,_MMU_TLB_SZ_1G  /* TS = 0, TSIZE = 256 MByte page size*/
+        ori    r5,r5,_MMU_TLB_SZ_1G  /* TS = 0, TSIZE = 1024 MByte page size*/
         mtspr  MAS1, r5
         addis  r6,0,HI(LOCAL_MEM_LOCAL_ADRS) /* EPN = LOCAL_MEM_LOCAL_ADRS */
         ori    r6,r6,0x0004          /* WIMGE = 00000 */
