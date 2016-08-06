@@ -818,7 +818,7 @@ void sysHwInit (void)
     /* Initialise L2CTL register */
 
     vxL2CTLSet(0x28000000,M85XX_L2CTL(CCSBAR));
-
+	
     /*
      * Need to setup static TLB entries for bootrom or any non-MMU
      * enabled images
@@ -872,7 +872,6 @@ void sysHwInit (void)
 
     WRS_ASM("isync");
 	
-  	/* WatchDog_Disable(); */
 #ifdef INCLUDE_VXBUS
     hardWareInterFaceInit();
 #endif /* INCLUDE_VXBUS */
@@ -1049,6 +1048,7 @@ STATUS sysToMonitor
 
     intLock();
 
+  	WatchDog_Disable();
 
 #ifdef INCLUDE_BRANCH_PREDICTION
     vxDisableBP();

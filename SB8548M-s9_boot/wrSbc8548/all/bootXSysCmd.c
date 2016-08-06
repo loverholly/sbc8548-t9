@@ -353,7 +353,8 @@ LOCAL char autoboot
 	/*(void) ioctl (STD_IN, FIOBAUDRATE, CONSOLE_BAUD_RATE);*/
 	(void) ioctl (STD_IN, FIOSETOPTIONS,
 		OPT_ECHO | OPT_CRMOD | OPT_TANDEM | OPT_7_BIT);
- 
+
+	WatchDog_Disable();
     if (timeout > 0)
 		{
         bootAppPrintf ("\nPress any key to stop auto-boot...\n",0,0,0,0,0,0);
