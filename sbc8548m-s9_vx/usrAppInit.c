@@ -40,10 +40,10 @@ void usrNetDrvInit(void)
 	int i = 0;
 	char netcfg[80];
 	
-	for (i = 0; i < 3; i++)
+	for (i = 0; i < 4; i++)
 	{
-		ipcom_drv_eth_init("motetsec",i+1,0);
-		sprintf(netcfg, "motetsec%d up", i+1);
+		ipcom_drv_eth_init("motetsec",i,0);
+		sprintf(netcfg, "motetsec%d up", i);
 		ifconfig(netcfg);
 	}
 

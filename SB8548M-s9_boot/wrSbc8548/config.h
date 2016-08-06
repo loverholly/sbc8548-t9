@@ -579,6 +579,7 @@ extern "C" {
 
 #define LBC_PERIAL_BASE          0xb0000000
 	
+	/* CS1, NVRAM */
 #define INCLUDE_LBC_CS1
 #ifdef INCLUDE_LBC_CS1	
 #define LBC_CS1_LOCAL_ADRS       0xb2000000

@@ -545,9 +545,7 @@ ddrDelay:
 		
 #ifdef INCLUDE_LBC_CS3
 
-
 	/* load OR3 */
-
 	WRITEADR(r6,r7,M85XX_OR3 (CCSBAR),(LBC_CS3_LOCAL_SIZE_MASK & 0xffff0000) | 0x0c80)
 
 	/* load BR3 */

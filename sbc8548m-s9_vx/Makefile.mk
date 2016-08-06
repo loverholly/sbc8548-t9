@@ -2,7 +2,7 @@
 #
 
 
-# GENERATED: Sat Aug 06 11:15:41 +0900 2016
+# GENERATED: Sat Aug 06 20:38:07 +0900 2016
 # DO NOT EDIT - file is regenerated whenever the project changes
 
 
@@ -16,7 +16,7 @@ endif
 PRJ_FILE       = sbc8548m-s9_vx.wpj
 PRJ_FULL_PATH  = $(WIND_HOME)/sbc8548-t9/sbc8548m-s9_vx
 PRJ_TYPE       = vxWorks
-PRJ_OBJS       = sysALib.o sysLib.o usrAppInit.o usrRtpAppInit.o prjConfig.o linkSyms.o test_file.o test_uart.o
+PRJ_OBJS       = sysALib.o sysLib.o usrAppInit.o usrRtpAppInit.o prjConfig.o linkSyms.o test_file.o test_uart.o rs485ctl.o Cpu_Bit.o
 PRJ_MAKEFILE   = $(PRJ_DIR)/Makefile.mk
 BOOT_OBJS      = romInit.o romStart.o $(BOOT_EXTRA)
 BUILD_SPEC     = default
@@ -427,10 +427,10 @@ AS               = ccppc
 BOOT_EXTRA       = 
 CC               = ccppc
 CC_ARCH_SPEC     = -te500v2
-CFLAGS           = -DCPU_VARIANT=_ppc85XX_e500v2 -g -te500v2 -ansi -fno-builtin -Wall -D_VSB_CONFIG_FILE=\"$(VSB_CONFIG_FILE)\" -I$(PRJ_DIR) -I$(BSP_DIR) -I$(TGT_DIR)/h -I$(TGT_DIR)/config/comps/src -I$(TGT_DIR)/h/wrn/coreip -I$(TGT_DIR)/src/drv -DCPU=PPC32 -DTOOL_FAMILY=gnu -DTOOL=e500v2gnu -DPRJ_BUILD -D_WRS_KERNEL -I$(WIND_HOME)/components/windml-5.3/h -I$(WIND_HOME)/components/webservices-1.7/h -I$(WIND_HOME)/components/webcli-4.8/target/h -I$(WIND_HOME)/components/opc-3.2/h -I$(WIND_HOME)/components/dcom-2.3/h -I$(WIND_HOME)/components/windml-5.3/osconfig/vxworks/src -I$(WIND_HOME)/components/ip_net2-6.8/osconfig/vxworks/src -I$(WIND_HOME)/components/windml-5.3/osconfig/vxworks/h -I$(WIND_HOME)/components/ip_net2-6.8/osconfig/vxworks/h -I$(TGT_DIR)/src/hwif -I$(TGT_DIR)/src/hwif/h @./ipcom_ipdomain -DIP_PORT_VXWORKS=68 -DINET -UCPU -DCPU=PPC85XX -UCPU_VARIANT -DCPU_VARIANT=_e500v2 -I.
-CFLAGS_AS        = -DCPU_VARIANT=_ppc85XX_e500v2 -g -te500v2 -ansi -fno-builtin -xassembler-with-cpp -D_VSB_CONFIG_FILE=\"$(VSB_CONFIG_FILE)\" -I$(PRJ_DIR) -I$(BSP_DIR) -I$(TGT_DIR)/h -I$(TGT_DIR)/config/comps/src -I$(TGT_DIR)/h/wrn/coreip -I$(TGT_DIR)/src/drv -DCPU=PPC32 -DTOOL_FAMILY=gnu -DTOOL=e500v2gnu -DPRJ_BUILD -D_WRS_KERNEL -I$(WIND_HOME)/components/windml-5.3/h -I$(WIND_HOME)/components/webservices-1.7/h -I$(WIND_HOME)/components/webcli-4.8/target/h -I$(WIND_HOME)/components/opc-3.2/h -I$(WIND_HOME)/components/dcom-2.3/h -I$(WIND_HOME)/components/windml-5.3/osconfig/vxworks/src -I$(WIND_HOME)/components/ip_net2-6.8/osconfig/vxworks/src -I$(WIND_HOME)/components/windml-5.3/osconfig/vxworks/h -I$(WIND_HOME)/components/ip_net2-6.8/osconfig/vxworks/h -I$(TGT_DIR)/src/hwif -I$(TGT_DIR)/src/hwif/h @./ipcom_ipdomain -DIP_PORT_VXWORKS=68 -DINET -UCPU -DCPU=PPC85XX -UCPU_VARIANT -DCPU_VARIANT=_e500v2 -I.
-CFLAGS_AS_PROJECT = -g -te500v2 -ansi -fno-builtin -I./all -I$(TGT_DIR)/h -I$(WIND_HOME)/components/windml-5.3/h -I$(WIND_HOME)/components/webservices-1.7/h -I$(WIND_HOME)/components/webcli-4.8/target/h -I$(WIND_HOME)/components/opc-3.2/h -I$(WIND_HOME)/components/dcom-2.3/h -I$(WIND_HOME)/components/windml-5.3/osconfig/vxworks/src -I$(WIND_HOME)/components/ip_net2-6.8/osconfig/vxworks/src -I$(WIND_HOME)/components/windml-5.3/osconfig/vxworks/h -I$(WIND_HOME)/components/ip_net2-6.8/osconfig/vxworks/h -I$(TGT_DIR)/src/hwif -I$(TGT_DIR)/src/hwif/h @./ipcom_ipdomain -I. -I$(TGT_DIR)/h/wrn/coreip -I$(TGT_DIR)/src/config -I$(TGT_DIR)/config/comps/src -I$(TGT_DIR)/config/comps/src/dosfs2 -I$(TGT_DIR)/src/drv -I$(TGT_DIR)/src/hwif/h -DCPU=PPC32 -DTOOL_FAMILY=gnu -DTOOL=e500v2gnu -D_WRS_KERNEL -DCPU_VARIANT=_ppc85XX_e500v2 -DIP_PORT_VXWORKS=68 -DINET -UCPU -DCPU=PPC85XX -UCPU_VARIANT -DCPU_VARIANT=_e500v2 -xassembler-with-cpp -D_VSB_CONFIG_FILE=\"$(VSB_CONFIG_FILE)\"
-CFLAGS_PROJECT   = -g -te500v2 -ansi -fno-builtin -Wall -I./all -I$(TGT_DIR)/h -I$(WIND_HOME)/components/windml-5.3/h -I$(WIND_HOME)/components/webservices-1.7/h -I$(WIND_HOME)/components/webcli-4.8/target/h -I$(WIND_HOME)/components/opc-3.2/h -I$(WIND_HOME)/components/dcom-2.3/h -I$(WIND_HOME)/components/windml-5.3/osconfig/vxworks/src -I$(WIND_HOME)/components/ip_net2-6.8/osconfig/vxworks/src -I$(WIND_HOME)/components/windml-5.3/osconfig/vxworks/h -I$(WIND_HOME)/components/ip_net2-6.8/osconfig/vxworks/h -I$(TGT_DIR)/src/hwif -I$(TGT_DIR)/src/hwif/h @./ipcom_ipdomain -I. -I$(TGT_DIR)/h/wrn/coreip -I$(TGT_DIR)/src/config -I$(TGT_DIR)/config/comps/src -I$(TGT_DIR)/config/comps/src/dosfs2 -I$(TGT_DIR)/src/drv -I$(TGT_DIR)/src/hwif/h -DCPU=PPC32 -DTOOL_FAMILY=gnu -DTOOL=e500v2gnu -D_WRS_KERNEL -DCPU_VARIANT=_ppc85XX_e500v2 -DIP_PORT_VXWORKS=68 -DINET -D_VSB_CONFIG_FILE=\"$(VSB_CONFIG_FILE)\"
+CFLAGS           = -DCPU_VARIANT=_ppc85XX_e500v2 -g -te500v2 -fno-builtin -Wall -D_VSB_CONFIG_FILE=\"$(VSB_CONFIG_FILE)\" -DCPU=PPC32 -DTOOL_FAMILY=gnu -DTOOL=e500v2gnu -DPRJ_BUILD -D_WRS_KERNEL @./ipcom_ipdomain -DIP_PORT_VXWORKS=68 -DINET -UCPU -DCPU=PPC85XX -UCPU_VARIANT -DCPU_VARIANT=_e500v2 -I $(PRJ_DIR) -I $(BSP_DIR) -I $(TGT_DIR)/h -I $(TGT_DIR)/config/comps/src -I $(TGT_DIR)/h/wrn/coreip -I $(TGT_DIR)/src/drv -I $(WIND_HOME)/components/windml-5.3/h -I $(WIND_HOME)/components/webservices-1.7/h -I $(WIND_HOME)/components/webcli-4.8/target/h -I $(WIND_HOME)/components/opc-3.2/h -I $(WIND_HOME)/components/dcom-2.3/h -I $(WIND_HOME)/components/windml-5.3/osconfig/vxworks/src -I $(WIND_HOME)/components/ip_net2-6.8/osconfig/vxworks/src -I $(WIND_HOME)/components/windml-5.3/osconfig/vxworks/h -I $(WIND_HOME)/components/ip_net2-6.8/osconfig/vxworks/h -I $(TGT_DIR)/src/hwif -I $(TGT_DIR)/src/hwif/h -I .
+CFLAGS_AS        = -DCPU_VARIANT=_ppc85XX_e500v2 -g -te500v2 -fno-builtin -xassembler-with-cpp -D_VSB_CONFIG_FILE=\"$(VSB_CONFIG_FILE)\" -DCPU=PPC32 -DTOOL_FAMILY=gnu -DTOOL=e500v2gnu -DPRJ_BUILD -D_WRS_KERNEL @./ipcom_ipdomain -DIP_PORT_VXWORKS=68 -DINET -UCPU -DCPU=PPC85XX -UCPU_VARIANT -DCPU_VARIANT=_e500v2 -I $(PRJ_DIR) -I $(BSP_DIR) -I $(TGT_DIR)/h -I $(TGT_DIR)/config/comps/src -I $(TGT_DIR)/h/wrn/coreip -I $(TGT_DIR)/src/drv -I $(WIND_HOME)/components/windml-5.3/h -I $(WIND_HOME)/components/webservices-1.7/h -I $(WIND_HOME)/components/webcli-4.8/target/h -I $(WIND_HOME)/components/opc-3.2/h -I $(WIND_HOME)/components/dcom-2.3/h -I $(WIND_HOME)/components/windml-5.3/osconfig/vxworks/src -I $(WIND_HOME)/components/ip_net2-6.8/osconfig/vxworks/src -I $(WIND_HOME)/components/windml-5.3/osconfig/vxworks/h -I $(WIND_HOME)/components/ip_net2-6.8/osconfig/vxworks/h -I $(TGT_DIR)/src/hwif -I $(TGT_DIR)/src/hwif/h -I .
+CFLAGS_AS_PROJECT = -g -te500v2 -fno-builtin -I./all -I$(TGT_DIR)/h -I$(WIND_HOME)/components/windml-5.3/h -I$(WIND_HOME)/components/webservices-1.7/h -I$(WIND_HOME)/components/webcli-4.8/target/h -I$(WIND_HOME)/components/opc-3.2/h -I$(WIND_HOME)/components/dcom-2.3/h -I$(WIND_HOME)/components/windml-5.3/osconfig/vxworks/src -I$(WIND_HOME)/components/ip_net2-6.8/osconfig/vxworks/src -I$(WIND_HOME)/components/windml-5.3/osconfig/vxworks/h -I$(WIND_HOME)/components/ip_net2-6.8/osconfig/vxworks/h -I$(TGT_DIR)/src/hwif -I$(TGT_DIR)/src/hwif/h @./ipcom_ipdomain -I. -I$(TGT_DIR)/h/wrn/coreip -I$(TGT_DIR)/src/config -I$(TGT_DIR)/config/comps/src -I$(TGT_DIR)/config/comps/src/dosfs2 -I$(TGT_DIR)/src/drv -I$(TGT_DIR)/src/hwif/h -DCPU=PPC32 -DTOOL_FAMILY=gnu -DTOOL=e500v2gnu -D_WRS_KERNEL -DCPU_VARIANT=_ppc85XX_e500v2 -DIP_PORT_VXWORKS=68 -DINET -UCPU -DCPU=PPC85XX -UCPU_VARIANT -DCPU_VARIANT=_e500v2 -xassembler-with-cpp -D_VSB_CONFIG_FILE=\"$(VSB_CONFIG_FILE)\"
+CFLAGS_PROJECT   = -g -te500v2 -fno-builtin -Wall -I./all -I$(TGT_DIR)/h -I$(WIND_HOME)/components/windml-5.3/h -I$(WIND_HOME)/components/webservices-1.7/h -I$(WIND_HOME)/components/webcli-4.8/target/h -I$(WIND_HOME)/components/opc-3.2/h -I$(WIND_HOME)/components/dcom-2.3/h -I$(WIND_HOME)/components/windml-5.3/osconfig/vxworks/src -I$(WIND_HOME)/components/ip_net2-6.8/osconfig/vxworks/src -I$(WIND_HOME)/components/windml-5.3/osconfig/vxworks/h -I$(WIND_HOME)/components/ip_net2-6.8/osconfig/vxworks/h -I$(TGT_DIR)/src/hwif -I$(TGT_DIR)/src/hwif/h @./ipcom_ipdomain -I. -I$(TGT_DIR)/h/wrn/coreip -I$(TGT_DIR)/src/config -I$(TGT_DIR)/config/comps/src -I$(TGT_DIR)/config/comps/src/dosfs2 -I$(TGT_DIR)/src/drv -I$(TGT_DIR)/src/hwif/h -DCPU=PPC32 -DTOOL_FAMILY=gnu -DTOOL=e500v2gnu -D_WRS_KERNEL -DCPU_VARIANT=_ppc85XX_e500v2 -DIP_PORT_VXWORKS=68 -DINET -D_VSB_CONFIG_FILE=\"$(VSB_CONFIG_FILE)\"
 CONFIG_ALL       = ./all
 CPP              = ccppc -E -P
 CPU_VARIANT      = _ppc85XX_e500v2
@@ -603,6 +603,14 @@ test_file.o:  $(PRJ_DIR)/test/test_file.c
 test_uart.o:  $(PRJ_DIR)/test/test_uart.c 
 	$(RM) test_uart.o
 	$(CC) $(CFLAGS) $(CFLAGS_OPTIONS_ALL) -c $(PRJ_DIR)/test/test_uart.c
+
+rs485ctl.o:  $(PRJ_DIR)/rs485ctl/rs485ctl.c 
+	$(RM) rs485ctl.o
+	$(CC) $(CFLAGS) $(CFLAGS_OPTIONS_ALL) -c $(PRJ_DIR)/rs485ctl/rs485ctl.c
+
+Cpu_Bit.o:  $(PRJ_DIR)/test/Cpu_Bit.c 
+	$(RM) Cpu_Bit.o
+	$(CC) $(CFLAGS) $(CFLAGS_OPTIONS_ALL) -c $(PRJ_DIR)/test/Cpu_Bit.c
 endif
 
 ifeq ($(BUILD_SPEC),default_rom)
@@ -622,6 +630,14 @@ test_file.o:  $(PRJ_DIR)/test/test_file.c
 test_uart.o:  $(PRJ_DIR)/test/test_uart.c 
 	$(RM) test_uart.o
 	$(CC) $(CFLAGS) $(CFLAGS_OPTIONS_ALL) -c $(PRJ_DIR)/test/test_uart.c
+
+rs485ctl.o:  $(PRJ_DIR)/rs485ctl/rs485ctl.c 
+	$(RM) rs485ctl.o
+	$(CC) $(CFLAGS) $(CFLAGS_OPTIONS_ALL) -c $(PRJ_DIR)/rs485ctl/rs485ctl.c
+
+Cpu_Bit.o:  $(PRJ_DIR)/test/Cpu_Bit.c 
+	$(RM) Cpu_Bit.o
+	$(CC) $(CFLAGS) $(CFLAGS_OPTIONS_ALL) -c $(PRJ_DIR)/test/Cpu_Bit.c
 endif
 
 ifeq ($(BUILD_SPEC),default_romCompress)
@@ -641,6 +657,14 @@ test_file.o:  $(PRJ_DIR)/test/test_file.c
 test_uart.o:  $(PRJ_DIR)/test/test_uart.c 
 	$(RM) test_uart.o
 	$(CC) $(CFLAGS) $(CFLAGS_OPTIONS_ALL) -c $(PRJ_DIR)/test/test_uart.c
+
+rs485ctl.o:  $(PRJ_DIR)/rs485ctl/rs485ctl.c 
+	$(RM) rs485ctl.o
+	$(CC) $(CFLAGS) $(CFLAGS_OPTIONS_ALL) -c $(PRJ_DIR)/rs485ctl/rs485ctl.c
+
+Cpu_Bit.o:  $(PRJ_DIR)/test/Cpu_Bit.c 
+	$(RM) Cpu_Bit.o
+	$(CC) $(CFLAGS) $(CFLAGS_OPTIONS_ALL) -c $(PRJ_DIR)/test/Cpu_Bit.c
 endif
 
 ifeq ($(BUILD_SPEC),default_romResident)
@@ -660,6 +684,14 @@ test_file.o:  $(PRJ_DIR)/test/test_file.c
 test_uart.o:  $(PRJ_DIR)/test/test_uart.c 
 	$(RM) test_uart.o
 	$(CC) $(CFLAGS) $(CFLAGS_OPTIONS_ALL) -c $(PRJ_DIR)/test/test_uart.c
+
+rs485ctl.o:  $(PRJ_DIR)/rs485ctl/rs485ctl.c 
+	$(RM) rs485ctl.o
+	$(CC) $(CFLAGS) $(CFLAGS_OPTIONS_ALL) -c $(PRJ_DIR)/rs485ctl/rs485ctl.c
+
+Cpu_Bit.o:  $(PRJ_DIR)/test/Cpu_Bit.c 
+	$(RM) Cpu_Bit.o
+	$(CC) $(CFLAGS) $(CFLAGS_OPTIONS_ALL) -c $(PRJ_DIR)/test/Cpu_Bit.c
 endif
 
 

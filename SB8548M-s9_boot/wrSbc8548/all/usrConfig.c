@@ -523,7 +523,7 @@ The VxWorks programmer guides.
 */
 
 #include <vxWorks.h>			/* always first */
-#include <config.h>			/* board support configuration header */
+#include "config.h"			/* board support configuration header */
 #include <usrConfig.h>			/* general configuration header */
 #include <usrDepend.c>			/* include dependency rules */
 #include <configNetParams.h>  /* header for network configuration parameters */
@@ -2220,7 +2220,6 @@ void usrRoot
 #ifdef	INCLUDE_SPE
     usrSpeInit ();
 #endif	/* INCLUDE_SPE */
-
 #endif /* _WRS_PAL_COPROC_LIB */
 
    /* Initialize system calls */

@@ -401,6 +401,7 @@ const struct hcfResource ppcIntCtlr0Resources[] = {
 struct intrCtlrTrigger epicIntCtlrTrigger[]=
 {
 	{EPIC_VEC_EXT_IRQ0+0,VXB_INTR_TRIG_EDGE|VXB_INTR_TRIG_NEG},
+	/* 看到逻辑里面的电平是反的,默认为低电平,此项目中需要将电平触发方式改为高电平的形式 */
 	{EPIC_VEC_EXT_IRQ0+1,VXB_INTR_TRIG_ACTIVE_HIGH},
 	{EPIC_VEC_EXT_IRQ0+2,VXB_INTR_TRIG_ACTIVE_HIGH},
 	{EPIC_VEC_EXT_IRQ0+3,VXB_INTR_TRIG_ACTIVE_HIGH},
