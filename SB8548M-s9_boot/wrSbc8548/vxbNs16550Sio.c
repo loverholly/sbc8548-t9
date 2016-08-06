@@ -698,7 +698,7 @@ SEE ALSO: sioChanUtil and VxWorks Device Driver Developer's Guide.
 
 /* local defines       */
 
-#define VXB_NS16550_CONSOLE_BAUD_RATE	9600
+#define VXB_NS16550_CONSOLE_BAUD_RATE	115200
 
 #ifdef	_WRS_CONFIG_SMP
 LOCAL BOOL ns16550SpinlockFuncReady = FALSE;

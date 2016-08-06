@@ -578,6 +578,13 @@ extern "C" {
 #endif	/* INCLUDE_LBC_CS3 */
 
 #define LBC_PERIAL_BASE          0xb0000000
+	
+#define INCLUDE_LBC_CS1
+#ifdef INCLUDE_LBC_CS1	
+#define LBC_CS1_LOCAL_ADRS       0xb2000000
+#define LBC_CS1_LOCAL_SIZE_MASK  0xfffe0000
+#define LBC_CS1_SIZE             0x20000
+#endif	/* INCLUDE_LBC_CS1 */
 	/* CS2, UARTA */
 #define INCLUDE_LBC_CS2
 #ifdef	INCLUDE_LBC_CS2
@@ -605,7 +612,7 @@ extern "C" {
 		/* CS6,UARTC */
 #define INCLUDE_LBC_CS6
 #ifdef INCLUDE_LBC_CS6		
-#define LBC_CS6_LOCAL_ADRS       0xb0200000
+#define LBC_CS6_LOCAL_ADRS       0xb0300000
 #define LBC_CS6_LOCAL_SIZE_MASK  0xfff00000
 #define LBC_CS6_LOCAL_SIEZ       0x00100000
 #endif	/* INCLUDE_LBC_CS6 */

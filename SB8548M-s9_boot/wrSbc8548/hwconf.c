@@ -340,7 +340,7 @@ const struct hcfResource serial0Resources[] = {
     { "regInterval", HCF_RES_INT,  {(void *)DUART_REG_ADDR_INTERVAL} },
     { "irqLevel",    HCF_RES_INT,  {(void *)SERIAL0_IRQ} },
     { "clkFreq",	 HCF_RES_INT,  {(void *)UART_FREQ} },
-    { "divisorCalc", HCF_RES_ADDR, {(void *)rs422Division}}
+    /* { "divisorCalc", HCF_RES_ADDR, {(void *)rs422Division}} */
 };
 #define serial0Num NELEMENTS(serial0Resources)
 
@@ -350,7 +350,7 @@ const struct hcfResource serial1Resources[] = {
     { "regInterval", HCF_RES_INT,  {(void *)DUART_REG_ADDR_INTERVAL} },
     { "irqLevel",    HCF_RES_INT,  {(void *)SERIAL1_IRQ} },
     { "clkFreq",	 HCF_RES_INT,  {(void *)UART_FREQ} },
-    { "divisorCalc", HCF_RES_ADDR, {(void *)rs422Division}}
+    /* { "divisorCalc", HCF_RES_ADDR, {(void *)rs422Division}} */
 };
 #define serial1Num NELEMENTS(serial1Resources)
 
@@ -360,7 +360,7 @@ const struct hcfResource serial2Resources[] = {
     { "regInterval", HCF_RES_INT,  {(void *)DUART_REG_ADDR_INTERVAL} },
     { "irqLevel",    HCF_RES_INT,  {(void *)SERIAL2_IRQ} },
     { "clkFreq",	 HCF_RES_INT,  {(void *)UART_FREQ} },
-    { "divisorCalc", HCF_RES_ADDR, {(void *)rs422Division}}
+    /* { "divisorCalc", HCF_RES_ADDR, {(void *)rs422Division}} */
 };
 #define serial2Num NELEMENTS(serial2Resources)
 const struct hcfResource serial3Resources[] = {
@@ -369,7 +369,7 @@ const struct hcfResource serial3Resources[] = {
     { "regInterval", HCF_RES_INT,  {(void *)DUART_REG_ADDR_INTERVAL} },
     { "irqLevel",    HCF_RES_INT,  {(void *)SERIAL3_IRQ} },
     { "clkFreq",	 HCF_RES_INT,  {(void *)UART_FREQ} },
-    { "divisorCalc", HCF_RES_ADDR, {(void *)rs422Division}}
+    /* { "divisorCalc", HCF_RES_ADDR, {(void *)rs422Division}} */
 };
 #define serial3Num NELEMENTS(serial3Resources)
 #endif	/* PRJ_BUILD */
