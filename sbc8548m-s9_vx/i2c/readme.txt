@@ -1,0 +1,1 @@
+I2C不以设备的方式提供，直接以i2cWrite/i2cRead这种形式提供API

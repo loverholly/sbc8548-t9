@@ -158,6 +158,8 @@ void usrAppInit (void)
 #endif
 		/* 用户自定义串口驱动 */
 	usrNs16550Init();
+		/* 添加I2C驱动 */
+	fsl_i2c_init();
 	
 	appRunInit();
 }

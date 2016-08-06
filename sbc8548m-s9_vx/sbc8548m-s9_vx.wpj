@@ -1420,6 +1420,22 @@ sysLib.o
 C/C++ compiler
 <END>
 
+<BEGIN> FILE_$(PRJ_DIR)/i2c/fsl_i2c.c_objects
+fsl_i2c.o
+<END>
+
+<BEGIN> FILE_$(PRJ_DIR)/i2c/fsl_i2c.c_tool
+C/C++ compiler
+<END>
+
+<BEGIN> FILE_$(PRJ_DIR)/i2c/i2cDrv.c_objects
+i2cDrv.o
+<END>
+
+<BEGIN> FILE_$(PRJ_DIR)/i2c/i2cDrv.c_tool
+C/C++ compiler
+<END>
+
 <BEGIN> FILE_$(PRJ_DIR)/linkSyms.c_customRule
 linkSyms.o
 <END>
@@ -1528,7 +1544,9 @@ $(BSP_DIR)/sysALib.s \
 	$(PRJ_DIR)/test/test_file.c \
 	$(PRJ_DIR)/test/test_uart.c \
 	$(PRJ_DIR)/rs485ctl/rs485ctl.c \
-	$(PRJ_DIR)/test/Cpu_Bit.c
+	$(PRJ_DIR)/test/Cpu_Bit.c \
+	$(PRJ_DIR)/i2c/fsl_i2c.c \
+	$(PRJ_DIR)/i2c/i2cDrv.c
 <END>
 
 <BEGIN> VSB_DIR

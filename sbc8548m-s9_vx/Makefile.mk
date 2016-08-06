@@ -2,7 +2,7 @@
 #
 
 
-# GENERATED: Sat Aug 06 20:38:07 +0900 2016
+# GENERATED: Sat Aug 06 21:57:08 +0900 2016
 # DO NOT EDIT - file is regenerated whenever the project changes
 
 
@@ -16,7 +16,7 @@ endif
 PRJ_FILE       = sbc8548m-s9_vx.wpj
 PRJ_FULL_PATH  = $(WIND_HOME)/sbc8548-t9/sbc8548m-s9_vx
 PRJ_TYPE       = vxWorks
-PRJ_OBJS       = sysALib.o sysLib.o usrAppInit.o usrRtpAppInit.o prjConfig.o linkSyms.o test_file.o test_uart.o rs485ctl.o Cpu_Bit.o
+PRJ_OBJS       = sysALib.o sysLib.o usrAppInit.o usrRtpAppInit.o prjConfig.o linkSyms.o test_file.o test_uart.o rs485ctl.o Cpu_Bit.o fsl_i2c.o i2cDrv.o
 PRJ_MAKEFILE   = $(PRJ_DIR)/Makefile.mk
 BOOT_OBJS      = romInit.o romStart.o $(BOOT_EXTRA)
 BUILD_SPEC     = default
@@ -611,6 +611,14 @@ rs485ctl.o:  $(PRJ_DIR)/rs485ctl/rs485ctl.c
 Cpu_Bit.o:  $(PRJ_DIR)/test/Cpu_Bit.c 
 	$(RM) Cpu_Bit.o
 	$(CC) $(CFLAGS) $(CFLAGS_OPTIONS_ALL) -c $(PRJ_DIR)/test/Cpu_Bit.c
+
+fsl_i2c.o:  $(PRJ_DIR)/i2c/fsl_i2c.c 
+	$(RM) fsl_i2c.o
+	$(CC) $(CFLAGS) $(CFLAGS_OPTIONS_ALL) -c $(PRJ_DIR)/i2c/fsl_i2c.c
+
+i2cDrv.o:  $(PRJ_DIR)/i2c/i2cDrv.c 
+	$(RM) i2cDrv.o
+	$(CC) $(CFLAGS) $(CFLAGS_OPTIONS_ALL) -c $(PRJ_DIR)/i2c/i2cDrv.c
 endif
 
 ifeq ($(BUILD_SPEC),default_rom)
@@ -638,6 +646,14 @@ rs485ctl.o:  $(PRJ_DIR)/rs485ctl/rs485ctl.c
 Cpu_Bit.o:  $(PRJ_DIR)/test/Cpu_Bit.c 
 	$(RM) Cpu_Bit.o
 	$(CC) $(CFLAGS) $(CFLAGS_OPTIONS_ALL) -c $(PRJ_DIR)/test/Cpu_Bit.c
+
+fsl_i2c.o:  $(PRJ_DIR)/i2c/fsl_i2c.c 
+	$(RM) fsl_i2c.o
+	$(CC) $(CFLAGS) $(CFLAGS_OPTIONS_ALL) -c $(PRJ_DIR)/i2c/fsl_i2c.c
+
+i2cDrv.o:  $(PRJ_DIR)/i2c/i2cDrv.c 
+	$(RM) i2cDrv.o
+	$(CC) $(CFLAGS) $(CFLAGS_OPTIONS_ALL) -c $(PRJ_DIR)/i2c/i2cDrv.c
 endif
 
 ifeq ($(BUILD_SPEC),default_romCompress)
@@ -665,6 +681,14 @@ rs485ctl.o:  $(PRJ_DIR)/rs485ctl/rs485ctl.c
 Cpu_Bit.o:  $(PRJ_DIR)/test/Cpu_Bit.c 
 	$(RM) Cpu_Bit.o
 	$(CC) $(CFLAGS) $(CFLAGS_OPTIONS_ALL) -c $(PRJ_DIR)/test/Cpu_Bit.c
+
+fsl_i2c.o:  $(PRJ_DIR)/i2c/fsl_i2c.c 
+	$(RM) fsl_i2c.o
+	$(CC) $(CFLAGS) $(CFLAGS_OPTIONS_ALL) -c $(PRJ_DIR)/i2c/fsl_i2c.c
+
+i2cDrv.o:  $(PRJ_DIR)/i2c/i2cDrv.c 
+	$(RM) i2cDrv.o
+	$(CC) $(CFLAGS) $(CFLAGS_OPTIONS_ALL) -c $(PRJ_DIR)/i2c/i2cDrv.c
 endif
 
 ifeq ($(BUILD_SPEC),default_romResident)
@@ -692,6 +716,14 @@ rs485ctl.o:  $(PRJ_DIR)/rs485ctl/rs485ctl.c
 Cpu_Bit.o:  $(PRJ_DIR)/test/Cpu_Bit.c 
 	$(RM) Cpu_Bit.o
 	$(CC) $(CFLAGS) $(CFLAGS_OPTIONS_ALL) -c $(PRJ_DIR)/test/Cpu_Bit.c
+
+fsl_i2c.o:  $(PRJ_DIR)/i2c/fsl_i2c.c 
+	$(RM) fsl_i2c.o
+	$(CC) $(CFLAGS) $(CFLAGS_OPTIONS_ALL) -c $(PRJ_DIR)/i2c/fsl_i2c.c
+
+i2cDrv.o:  $(PRJ_DIR)/i2c/i2cDrv.c 
+	$(RM) i2cDrv.o
+	$(CC) $(CFLAGS) $(CFLAGS_OPTIONS_ALL) -c $(PRJ_DIR)/i2c/i2cDrv.c
 endif
 
 
