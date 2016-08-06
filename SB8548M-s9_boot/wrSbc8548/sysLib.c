@@ -54,7 +54,7 @@ modification history
 #include <arch/ppc/vxPpcLib.h>
 #include <private/vmLibP.h>
 #include <miiLib.h>
-
+#include "cpld/cpldDrv.h"
 
 #ifdef INCLUDE_PCI_BUS
 #include <drv/pci/pciAutoConfigLib.h>
@@ -418,7 +418,6 @@ UINT32 ppcE500CACHE_ALIGN_SIZE = 32;
 #include "sysMpc85xxI2c.c"
 /* 添加串口驱动部分的源码 */
 #include "vxbNs16550Sio.c"
-
 
 #ifdef INCLUDE_L1_IPARITY_HDLR
     #include "sysL1ICacheParity.c"
@@ -856,6 +855,7 @@ void sysHwInit (void)
     /* Machine check via RXFE for RIO */
 
     vxHid1Set(vxHid1Get()| HID1_ASTME | HID1_RXFE); /* Address Stream Enable */
+	
 #ifdef PRJ_BUILD
     /* enable the flash window */
     *M85XX_LAWBAR3(CCSBAR) = LBC_PERIAL_BASE >> LAWBAR_ADRS_SHIFT;
@@ -873,7 +873,8 @@ void sysHwInit (void)
 #endif	/* PRJ_BUILD */
 
     WRS_ASM("isync");
-    
+	
+  	/* WatchDog_Disable(); */
 #ifdef INCLUDE_VXBUS
     hardWareInterFaceInit();
 #endif /* INCLUDE_VXBUS */
@@ -2030,3 +2031,6 @@ unsigned int cpu_time_diff_ms(unsigned int last)
     now = now/1000;
     return (unsigned int)now;
 }
+
+/* 添加cpldDrv的代码 */
+#include "cpld/cpldDrv.c"

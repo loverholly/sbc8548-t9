@@ -1219,7 +1219,9 @@ void usrInit
 # endif  /* CPU_FAMILY == PPC && defined(INCLUDE_EXC_SHOW) */
     excVecInit ();				/* install exception vectors */
 #endif  /* INCLUDE_EXC_HANDLING */
-
+	
+	WatchDog_Disable();
+	
     sysHwInit ();				/* initialize system hardware */
 
 #ifdef  INCLUDE_DEBUG_KWRITE_SIO

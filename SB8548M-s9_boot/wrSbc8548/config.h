@@ -575,6 +575,7 @@ extern "C" {
 #define LBC_CS3_LOCAL_ADRS       0xf0100000
 #define LBC_CS3_LOCAL_SIZE_MASK  0xfff00000
 #define LBC_CS3_SIZE             0x0100000
+#define CPLD_REG_BASE            LBC_CS3_LOCAL_ADRS	
 #endif	/* INCLUDE_LBC_CS3 */
 
 #define LBC_PERIAL_BASE          0xb0000000
