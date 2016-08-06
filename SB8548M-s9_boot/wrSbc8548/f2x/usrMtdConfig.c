@@ -23,7 +23,7 @@ unsigned int f2xFlashSize()
 STATUS  f2xMtdRegister()
 {
 	static int i=0;
-	int  wbCapbility=0;
+	int  wbCapbility=F2X_WB32_TYPE;
 	unsigned int adrs_part[4]={0};
 #define BOOTROM_SPACE_SIZE 0x100000
 #define PARAM_SPACE_SIZE   0x100000

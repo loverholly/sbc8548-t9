@@ -736,14 +736,14 @@ STATUS i2cStatusShow(int index)
 struct hcfResource i2cx0Resources[] =
 {
     { VXB_REG_BASE,   HCF_RES_ADDR,  {(void *)(CCSBAR + 0x3000)} },/*控制器基址*/
-    { "baudRate",       HCF_RES_INT,   {(void *)400000} }, /*默认波特率*/
+    { "baudRate",       HCF_RES_INT,   {(void *)100000} }, /*默认波特率*/
 };
 #define i2cx0Num NELEMENTS(i2cx0Resources)
 
 struct hcfResource i2cx1Resources[] =
 {
     { VXB_REG_BASE,   HCF_RES_ADDR,  {(void *)(CCSBAR + 0x3100)} },/*控制器基址*/
-    { "baudRate",       HCF_RES_INT,   {(void *)400000} }, /*默认波特率*/
+    { "baudRate",       HCF_RES_INT,   {(void *)100000} }, /*默认波特率*/
 };
 #define i2cx1Num NELEMENTS(i2cx1Resources)
 
