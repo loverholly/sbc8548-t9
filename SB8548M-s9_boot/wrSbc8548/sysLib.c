@@ -1046,6 +1046,8 @@ STATUS sysToMonitor
     {
     FUNCPTR pRom = (FUNCPTR) (ROM_TEXT_ADRS + 4);   /* Warm reboot */
 
+	mtdReset();
+	
     intLock();
 
   	WatchDog_Disable();

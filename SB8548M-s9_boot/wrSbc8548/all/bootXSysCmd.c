@@ -399,7 +399,6 @@ LOCAL char autoboot
             #if 1
                 bootStructToString (sysBootLine, &oldParam);/*启动前将参数还原*/
             #endif
-				printf("jump to the load address\r\n");
 			    go (entry);             /* ... and never return */
             }
 		else
@@ -451,7 +450,7 @@ LOCAL void bootAppShellAutoboot
 		if ((sysStartType & BOOT_QUICK_AUTOBOOT) ||
 			(sysFlags & SYSFLG_QUICK_AUTOBOOT))
 			{
-			timeout = 1;
+			timeout = 0;
 			}
 
 		    bootShellKey = autoboot (timeout);   /* doesn't return if successful */
