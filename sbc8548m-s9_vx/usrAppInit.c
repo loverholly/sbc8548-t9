@@ -57,18 +57,17 @@ void usrNetDrvInit(void)
 #include <vmLib.h>
 #include <elf.h>
 #include <ioLib.h>
-char *pText = NULL;
-char *pData = NULL;
-char *pBss = NULL;
+
 
 STATUS appLoadFromFs(void)
 {
     char        *objName = "/tffs0/AppRun.out";
     int         fd = -1;
     MODULE_ID   mod_id;
-    pText = memalign(4, 0x400000);
-    pData = memalign(4, 0x400000);
-    pBss = memalign(4, 0x400000);
+    char *pText;
+    char *pData;
+    char *pBss;
+    
 	if ((fd = open(objName, O_RDONLY, 0)) == ERROR) {
 		perror("no app file\r\n");
 		return ERROR;
