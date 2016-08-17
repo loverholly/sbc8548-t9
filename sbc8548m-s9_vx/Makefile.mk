@@ -2,7 +2,7 @@
 #
 
 
-# GENERATED: Sun Aug 07 11:03:34 +0900 2016
+# GENERATED: Wed Aug 17 20:51:46 +0900 2016
 # DO NOT EDIT - file is regenerated whenever the project changes
 
 
@@ -16,7 +16,7 @@ endif
 PRJ_FILE       = sbc8548m-s9_vx.wpj
 PRJ_FULL_PATH  = $(WIND_HOME)/sbc8548-t9/sbc8548m-s9_vx
 PRJ_TYPE       = vxWorks
-PRJ_OBJS       = sysALib.o sysLib.o usrAppInit.o usrRtpAppInit.o prjConfig.o linkSyms.o test_file.o test_uart.o rs485ctl.o Cpu_Bit.o fsl_i2c.o i2cDrv.o
+PRJ_OBJS       = sysALib.o sysLib.o usrAppInit.o usrRtpAppInit.o prjConfig.o linkSyms.o test_file.o rs485ctl.o fsl_i2c.o i2cDrv.o
 PRJ_MAKEFILE   = $(PRJ_DIR)/Makefile.mk
 BOOT_OBJS      = romInit.o romStart.o $(BOOT_EXTRA)
 BUILD_SPEC     = default
@@ -134,6 +134,10 @@ COMPONENTS = DRV_INTCTLR_EPIC \
 	INCLUDE_COMMON_NET \
 	INCLUDE_COPROCESSOR \
 	INCLUDE_COPROCESSOR_SHOW \
+	INCLUDE_CPLUS \
+	INCLUDE_CPLUS_DEMANGLER \
+	INCLUDE_CPLUS_IOSTREAMS \
+	INCLUDE_CPLUS_LANG \
 	INCLUDE_CPU_LIGHT_PWR_MGR \
 	INCLUDE_CPU_PWR_MGMT \
 	INCLUDE_CTORS_DTORS \
@@ -600,17 +604,9 @@ test_file.o:  $(PRJ_DIR)/test/test_file.c
 	$(RM) test_file.o
 	$(CC) $(CFLAGS) $(CFLAGS_OPTIONS_ALL) -c $(PRJ_DIR)/test/test_file.c
 
-test_uart.o:  $(PRJ_DIR)/test/test_uart.c 
-	$(RM) test_uart.o
-	$(CC) $(CFLAGS) $(CFLAGS_OPTIONS_ALL) -c $(PRJ_DIR)/test/test_uart.c
-
 rs485ctl.o:  $(PRJ_DIR)/rs485ctl/rs485ctl.c 
 	$(RM) rs485ctl.o
 	$(CC) $(CFLAGS) $(CFLAGS_OPTIONS_ALL) -c $(PRJ_DIR)/rs485ctl/rs485ctl.c
-
-Cpu_Bit.o:  $(PRJ_DIR)/test/Cpu_Bit.c 
-	$(RM) Cpu_Bit.o
-	$(CC) $(CFLAGS) $(CFLAGS_OPTIONS_ALL) -c $(PRJ_DIR)/test/Cpu_Bit.c
 
 fsl_i2c.o:  $(PRJ_DIR)/i2c/fsl_i2c.c 
 	$(RM) fsl_i2c.o
@@ -635,17 +631,9 @@ test_file.o:  $(PRJ_DIR)/test/test_file.c
 	$(RM) test_file.o
 	$(CC) $(CFLAGS) $(CFLAGS_OPTIONS_ALL) -c $(PRJ_DIR)/test/test_file.c
 
-test_uart.o:  $(PRJ_DIR)/test/test_uart.c 
-	$(RM) test_uart.o
-	$(CC) $(CFLAGS) $(CFLAGS_OPTIONS_ALL) -c $(PRJ_DIR)/test/test_uart.c
-
 rs485ctl.o:  $(PRJ_DIR)/rs485ctl/rs485ctl.c 
 	$(RM) rs485ctl.o
 	$(CC) $(CFLAGS) $(CFLAGS_OPTIONS_ALL) -c $(PRJ_DIR)/rs485ctl/rs485ctl.c
-
-Cpu_Bit.o:  $(PRJ_DIR)/test/Cpu_Bit.c 
-	$(RM) Cpu_Bit.o
-	$(CC) $(CFLAGS) $(CFLAGS_OPTIONS_ALL) -c $(PRJ_DIR)/test/Cpu_Bit.c
 
 fsl_i2c.o:  $(PRJ_DIR)/i2c/fsl_i2c.c 
 	$(RM) fsl_i2c.o
@@ -670,17 +658,9 @@ test_file.o:  $(PRJ_DIR)/test/test_file.c
 	$(RM) test_file.o
 	$(CC) $(CFLAGS) $(CFLAGS_OPTIONS_ALL) -c $(PRJ_DIR)/test/test_file.c
 
-test_uart.o:  $(PRJ_DIR)/test/test_uart.c 
-	$(RM) test_uart.o
-	$(CC) $(CFLAGS) $(CFLAGS_OPTIONS_ALL) -c $(PRJ_DIR)/test/test_uart.c
-
 rs485ctl.o:  $(PRJ_DIR)/rs485ctl/rs485ctl.c 
 	$(RM) rs485ctl.o
 	$(CC) $(CFLAGS) $(CFLAGS_OPTIONS_ALL) -c $(PRJ_DIR)/rs485ctl/rs485ctl.c
-
-Cpu_Bit.o:  $(PRJ_DIR)/test/Cpu_Bit.c 
-	$(RM) Cpu_Bit.o
-	$(CC) $(CFLAGS) $(CFLAGS_OPTIONS_ALL) -c $(PRJ_DIR)/test/Cpu_Bit.c
 
 fsl_i2c.o:  $(PRJ_DIR)/i2c/fsl_i2c.c 
 	$(RM) fsl_i2c.o
@@ -705,17 +685,9 @@ test_file.o:  $(PRJ_DIR)/test/test_file.c
 	$(RM) test_file.o
 	$(CC) $(CFLAGS) $(CFLAGS_OPTIONS_ALL) -c $(PRJ_DIR)/test/test_file.c
 
-test_uart.o:  $(PRJ_DIR)/test/test_uart.c 
-	$(RM) test_uart.o
-	$(CC) $(CFLAGS) $(CFLAGS_OPTIONS_ALL) -c $(PRJ_DIR)/test/test_uart.c
-
 rs485ctl.o:  $(PRJ_DIR)/rs485ctl/rs485ctl.c 
 	$(RM) rs485ctl.o
 	$(CC) $(CFLAGS) $(CFLAGS_OPTIONS_ALL) -c $(PRJ_DIR)/rs485ctl/rs485ctl.c
-
-Cpu_Bit.o:  $(PRJ_DIR)/test/Cpu_Bit.c 
-	$(RM) Cpu_Bit.o
-	$(CC) $(CFLAGS) $(CFLAGS_OPTIONS_ALL) -c $(PRJ_DIR)/test/Cpu_Bit.c
 
 fsl_i2c.o:  $(PRJ_DIR)/i2c/fsl_i2c.c 
 	$(RM) fsl_i2c.o

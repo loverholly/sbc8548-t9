@@ -1468,27 +1468,11 @@ rs485ctl.o
 C/C++ compiler
 <END>
 
-<BEGIN> FILE_$(PRJ_DIR)/test/Cpu_Bit.c_objects
-Cpu_Bit.o
-<END>
-
-<BEGIN> FILE_$(PRJ_DIR)/test/Cpu_Bit.c_tool
-C/C++ compiler
-<END>
-
 <BEGIN> FILE_$(PRJ_DIR)/test/test_file.c_objects
 test_file.o
 <END>
 
 <BEGIN> FILE_$(PRJ_DIR)/test/test_file.c_tool
-C/C++ compiler
-<END>
-
-<BEGIN> FILE_$(PRJ_DIR)/test/test_uart.c_objects
-test_uart.o
-<END>
-
-<BEGIN> FILE_$(PRJ_DIR)/test/test_uart.c_tool
 C/C++ compiler
 <END>
 
@@ -1542,9 +1526,7 @@ $(BSP_DIR)/sysALib.s \
 	$(PRJ_DIR)/prjConfig.c \
 	$(PRJ_DIR)/linkSyms.c \
 	$(PRJ_DIR)/test/test_file.c \
-	$(PRJ_DIR)/test/test_uart.c \
 	$(PRJ_DIR)/rs485ctl/rs485ctl.c \
-	$(PRJ_DIR)/test/Cpu_Bit.c \
 	$(PRJ_DIR)/i2c/fsl_i2c.c \
 	$(PRJ_DIR)/i2c/i2cDrv.c
 <END>
@@ -1624,6 +1606,9 @@ INCLUDE_CACHE_SUPPORT \
 	INCLUDE_SIGNALS \
 	INCLUDE_FORMATTED_OUT_BASIC \
 	INCLUDE_CTORS_DTORS \
+	INCLUDE_CPLUS \
+	INCLUDE_CPLUS_LANG \
+	INCLUDE_CPLUS_IOSTREAMS \
 	INCLUDE_PIPES \
 	INCLUDE_IO_SYSTEM \
 	INCLUDE_EXC_SHOW \
@@ -1839,6 +1824,7 @@ INCLUDE_MEMORY_CONFIG \
 	INCLUDE_SEM_EVENTS \
 	INCLUDE_HOOK_SHOW \
 	INCLUDE_AVL_UINT_TREES \
+	INCLUDE_CPLUS_DEMANGLER \
 	INCLUDE_NBIO_LOG \
 	INCLUDE_DISK_UTIL \
 	INCLUDE_PTYDRV \
