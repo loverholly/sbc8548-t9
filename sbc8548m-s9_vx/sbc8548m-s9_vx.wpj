@@ -126,6 +126,7 @@ ccppc
 
 <BEGIN> BUILD_default_MACRO_CFLAGS
 -DCPU_VARIANT=_ppc85XX_e500v2 \
+	-mlongcall \
 	-g \
 	-te500v2 \
 	-fno-builtin \
@@ -1476,6 +1477,14 @@ rs485ctl.o
 C/C++ compiler
 <END>
 
+<BEGIN> FILE_$(PRJ_DIR)/temp/temp.c_objects
+temp.o
+<END>
+
+<BEGIN> FILE_$(PRJ_DIR)/temp/temp.c_tool
+C/C++ compiler
+<END>
+
 <BEGIN> FILE_$(PRJ_DIR)/test/test_file.c_objects
 test_file.o
 <END>
@@ -1537,7 +1546,8 @@ $(BSP_DIR)/sysALib.s \
 	$(PRJ_DIR)/rs485ctl/rs485ctl.c \
 	$(PRJ_DIR)/i2c/fsl_i2c.c \
 	$(PRJ_DIR)/i2c/i2cDrv.c \
-	$(PRJ_DIR)/eioctl/extio.c
+	$(PRJ_DIR)/eioctl/extio.c \
+	$(PRJ_DIR)/temp/temp.c
 <END>
 
 <BEGIN> VSB_DIR

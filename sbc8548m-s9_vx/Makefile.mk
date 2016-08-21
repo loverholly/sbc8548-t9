@@ -2,7 +2,7 @@
 #
 
 
-# GENERATED: Sun Aug 21 22:55:25 +0900 2016
+# GENERATED: Sun Aug 21 23:32:01 +0900 2016
 # DO NOT EDIT - file is regenerated whenever the project changes
 
 
@@ -16,7 +16,7 @@ endif
 PRJ_FILE       = sbc8548m-s9_vx.wpj
 PRJ_FULL_PATH  = $(WIND_HOME)/sbc8548-t9/sbc8548m-s9_vx
 PRJ_TYPE       = vxWorks
-PRJ_OBJS       = sysALib.o sysLib.o usrAppInit.o usrRtpAppInit.o prjConfig.o linkSyms.o test_file.o rs485ctl.o fsl_i2c.o i2cDrv.o extio.o
+PRJ_OBJS       = sysALib.o sysLib.o usrAppInit.o usrRtpAppInit.o prjConfig.o linkSyms.o test_file.o rs485ctl.o fsl_i2c.o i2cDrv.o extio.o temp.o
 PRJ_MAKEFILE   = $(PRJ_DIR)/Makefile.mk
 BOOT_OBJS      = romInit.o romStart.o $(BOOT_EXTRA)
 BUILD_SPEC     = default
@@ -619,6 +619,10 @@ i2cDrv.o:  $(PRJ_DIR)/i2c/i2cDrv.c
 extio.o:  $(PRJ_DIR)/eioctl/extio.c 
 	$(RM) extio.o
 	$(CC) $(CFLAGS) $(CFLAGS_OPTIONS_ALL) -c $(PRJ_DIR)/eioctl/extio.c
+
+temp.o:  $(PRJ_DIR)/temp/temp.c 
+	$(RM) temp.o
+	$(CC) $(CFLAGS) $(CFLAGS_OPTIONS_ALL) -c $(PRJ_DIR)/temp/temp.c
 endif
 
 ifeq ($(BUILD_SPEC),default_rom)
@@ -650,6 +654,10 @@ i2cDrv.o:  $(PRJ_DIR)/i2c/i2cDrv.c
 extio.o:  $(PRJ_DIR)/eioctl/extio.c 
 	$(RM) extio.o
 	$(CC) $(CFLAGS) $(CFLAGS_OPTIONS_ALL) -c $(PRJ_DIR)/eioctl/extio.c
+
+temp.o:  $(PRJ_DIR)/temp/temp.c 
+	$(RM) temp.o
+	$(CC) $(CFLAGS) $(CFLAGS_OPTIONS_ALL) -c $(PRJ_DIR)/temp/temp.c
 endif
 
 ifeq ($(BUILD_SPEC),default_romCompress)
@@ -681,6 +689,10 @@ i2cDrv.o:  $(PRJ_DIR)/i2c/i2cDrv.c
 extio.o:  $(PRJ_DIR)/eioctl/extio.c 
 	$(RM) extio.o
 	$(CC) $(CFLAGS) $(CFLAGS_OPTIONS_ALL) -c $(PRJ_DIR)/eioctl/extio.c
+
+temp.o:  $(PRJ_DIR)/temp/temp.c 
+	$(RM) temp.o
+	$(CC) $(CFLAGS) $(CFLAGS_OPTIONS_ALL) -c $(PRJ_DIR)/temp/temp.c
 endif
 
 ifeq ($(BUILD_SPEC),default_romResident)
@@ -712,6 +724,10 @@ i2cDrv.o:  $(PRJ_DIR)/i2c/i2cDrv.c
 extio.o:  $(PRJ_DIR)/eioctl/extio.c 
 	$(RM) extio.o
 	$(CC) $(CFLAGS) $(CFLAGS_OPTIONS_ALL) -c $(PRJ_DIR)/eioctl/extio.c
+
+temp.o:  $(PRJ_DIR)/temp/temp.c 
+	$(RM) temp.o
+	$(CC) $(CFLAGS) $(CFLAGS_OPTIONS_ALL) -c $(PRJ_DIR)/temp/temp.c
 endif
 
 
