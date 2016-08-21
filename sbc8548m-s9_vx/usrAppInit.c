@@ -175,7 +175,6 @@ void usrAppInit (void)
 	usrNs16550Init();
 		/* Ìí¼ÓI2CÇý¶¯ */
 	fsl_i2c_init();
-	taskDelay(sysClkRateGet());
 	
 	appRunInit();
 }
