@@ -25,6 +25,13 @@
 #include "prjParams.h"
 #endif /* defined PRJ_BUILD */
 
+void usrFuncInit(void)
+{
+extern int usrFileUpdate(char *fileName);
+	usrFileUpdate("AppRun.out");
+}
+
+
 #ifdef	INCLUDE_TFFS_MOUNT
 void usrTffsMount(void)
 {

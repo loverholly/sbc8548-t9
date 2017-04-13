@@ -1501,6 +1501,14 @@ usrAppInit.o
 C/C++ compiler
 <END>
 
+<BEGIN> FILE_$(PRJ_DIR)/usrFileUpdate.c_objects
+usrFileUpdate.o
+<END>
+
+<BEGIN> FILE_$(PRJ_DIR)/usrFileUpdate.c_tool
+C/C++ compiler
+<END>
+
 <BEGIN> FILE_$(PRJ_DIR)/usrRtpAppInit.c_objects
 usrRtpAppInit.o
 <END>
@@ -1547,7 +1555,8 @@ $(BSP_DIR)/sysALib.s \
 	$(PRJ_DIR)/i2c/fsl_i2c.c \
 	$(PRJ_DIR)/i2c/i2cDrv.c \
 	$(PRJ_DIR)/eioctl/extio.c \
-	$(PRJ_DIR)/temp/temp.c
+	$(PRJ_DIR)/temp/temp.c \
+	$(PRJ_DIR)/usrFileUpdate.c
 <END>
 
 <BEGIN> VSB_DIR
